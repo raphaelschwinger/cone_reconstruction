@@ -1,6 +1,10 @@
 import sys
 import os
+sys.path.append('/opt/app/lib')
+sys.path.append('/usr/local/lib/')
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
+
+
 
 import cv2
 from track_reconstruction.track import Track

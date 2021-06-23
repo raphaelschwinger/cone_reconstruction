@@ -24,7 +24,10 @@ class Display2D(object):
     pygame.display.flip()
 
 from multiprocessing import Process, Queue
-import pangolin
+try:
+    import pangolin
+except:
+    import pypangolin as pangolin
 import OpenGL.GL as gl
 import numpy as np
 
