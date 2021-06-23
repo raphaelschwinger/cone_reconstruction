@@ -1,0 +1,29 @@
+version: '2'
+services:
+  app:
+    build: .
+    environment:
+      - DISPLAY=novnc:0.0
+    depends_on:
+      - novnc
+    networks:
+      - x11
+       # Overrides default command so things don't shut down after the process ends.
+    volumes:
+      # Mounts the project folder to '/workspace'. While this file is in .devcontainer,
+      # mounts are relative to the first file in the list, which is a level up.
+      - ..:/workspace:cached
+    command: /bin/sh -c "while sleep 1000; do :; done"
+  novnc:
+    image: theasp/novnc:latest
+    environment:
+      # Adjust to your screen size
+      - DISPLAY_WIDTH=1600
+      - DISPLAY_HEIGHT=968
+      - RUN_XTERM=no
+    ports:
+      - "8080:8080"
+    networks:
+      - x11
+networks:
+  x11:
