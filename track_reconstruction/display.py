@@ -24,12 +24,10 @@ class Display2D(object):
     pygame.display.flip()
 
 from multiprocessing import Process, Queue
-try:
-    import pangolin
-except:
-    import pypangolin as pangolin
+import pypangolin as pangolin
 import OpenGL.GL as gl
 import numpy as np
+from track_reconstruction.utils import DrawLines
 
 class Display3D(object):
   def __init__(self):
@@ -55,7 +53,7 @@ class Display3D(object):
 
     # Create Interactive View in window
     self.dcam = pangolin.CreateDisplay()
-    self.dcam.SetBounds(0.0, 1.0, 0.0, 1.0, w/h)
+    self.dcam.SetBounds(pangolin.Attach(0.0), pangolin.Attach(1.0), pangolin.Attach(0.0), pangolin.Attach(1.0), w/h)
     self.dcam.SetHandler(self.handler)
     # hack to avoid small Pangolin, no idea why it's *2
     self.dcam.Resize(pangolin.Viewport(0,0,w*2,h*2))
@@ -70,31 +68,49 @@ class Display3D(object):
     gl.glClearColor(0.0, 0.0, 0.0, 1.0)
     self.dcam.Activate(self.scam)
 
+    # draw test point
+    gl.glPointSize(2)
+    gl.glColor3f(1,0,0)
+    gl.glBegin(gl.GL_POINTS)
+    for i in range(0,1000):
+      gl.glVertex3d(0,0,i)
+      gl.glVertex3d(i,0,0)
+      gl.glVertex3d(0,i,0)
+    gl.glEnd()
+
+     # draw test point
+    gl.glLineWidth(2)
+    gl.glColor3f(0,0,1)
+    gl.glBegin(gl.GL_LINES)
+    gl.glVertex3d(0,0,0)
+    gl.glVertex3d(100,0,0)
+    gl.glEnd()
+
     # draw coordinate-System
     gl.glLineWidth(1)
     gl.glColor3f(1.0, 0.0, 0.0)
-    pangolin.DrawLines(np.array([[0, 0, 0]]), np.array([[1, 0, 0]]))
+    DrawLines(np.array([[0, 0, 0]]), np.array([[1, 0, 0]]))
     gl.glColor3f(0.0, 1.0, 0.0)
-    pangolin.DrawLines(np.array([[0, 0, 0]]), np.array([[0, 1, 0]]))
+    DrawLines(np.array([[0, 0, 0]]), np.array([[0, 1, 0]]))
     gl.glColor3f(0.0, 0.0, 1.0)
-    pangolin.DrawLines(np.array([[0, 0, 0]]), np.array([[0, 0, 1]]))
+    DrawLines(np.array([[0, 0, 0]]), np.array([[0, 0, 1]]))
 
     if self.state is not None:
       if self.state[0].shape[0] >= 2:
         # draw poses
         gl.glColor3f(0.0, 1.0, 0.0)
-        pangolin.DrawCameras(self.state[0][:-1], 0.1)
+        # pangolin.DrawCameras(self.state[0][:-1], 0.1)
 
       if self.state[0].shape[0] >= 1:
         # draw current pose as yellow
         gl.glColor3f(1.0, 1.0, 0.0)
-        pangolin.DrawCameras(self.state[0][-1:], 0.1)
+        # pangolin.DrawCameras(self.state[0][-1:], 0.1)
 
       if self.state[1].shape[0] != 0:
         # draw keypoints
         gl.glPointSize(5)
         gl.glColor3f(1.0, 0.0, 0.0)
-        pangolin.DrawPoints(self.state[1], self.state[2])
+        # pangolin.DrawPoints(self.state[1], self.state[2])
 
     pangolin.FinishFrame()
 
