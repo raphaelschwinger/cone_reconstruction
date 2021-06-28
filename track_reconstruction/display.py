@@ -27,7 +27,7 @@ from multiprocessing import Process, Queue
 import pypangolin as pangolin
 import OpenGL.GL as gl
 import numpy as np
-from track_reconstruction.utils import DrawLines
+from track_reconstruction.utils import DrawLines, DrawPoints
 
 class Display3D(object):
   def __init__(self):
@@ -92,7 +92,7 @@ class Display3D(object):
         # draw keypoints
         gl.glPointSize(5)
         gl.glColor3f(1.0, 0.0, 0.0)
-        # pangolin.DrawPoints(self.state[1], self.state[2])
+        DrawPoints(self.state[1], self.state[2])
 
     pangolin.FinishFrame()
 

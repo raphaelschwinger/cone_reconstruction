@@ -66,3 +66,26 @@ def DrawLines(points, points2, point_size=0):
         gl.glVertex3d(r[i, 0], r[i, 1], r[i, 2])
         gl.glVertex3d(r2[i, 0], r2[i, 1], r2[i, 2])
     gl.glEnd()
+
+
+#     void DrawPoints(py::array_t<double> points, py::array_t<double> colors) {
+#     auto r = points.unchecked<2>();
+#     auto rc = colors.unchecked<2>();
+
+#     glBegin(GL_POINTS);
+#     for (ssize_t i = 0; i < r.shape(0); ++i) {
+#         glColor3f(rc(i, 0), rc(i, 1), rc(i, 2));
+#         glVertex3d(r(i, 0), r(i, 1), r(i, 2));
+#     }
+#     glEnd();
+# }
+
+def DrawPoints(points, colors):
+    r = points
+    rc = colors
+
+    gl.glBegin(gl.GL_POINTS)
+    for i in range(0, r.shape[0]):
+        gl.glColor3f(rc[i, 0], rc[i, 1], rc[i, 2])
+        gl.glVertex3d(r[i, 0], r[i,1], r[i, 2])
+    gl.glEnd()
