@@ -32,27 +32,6 @@ def rotation_matrix_from_vectors(vec1, vec2):
 
 # pangolin helpers
 
-#   void DrawLines(pybind11::array_t<double> points, pybind11::array_t<double> points2, float point_size=0) {
-#       auto r = points.unchecked<2>();
-#       auto r2 = points2.unchecked<2>();
-#       glBegin(GL_LINES);
-#       for (ssize_t i = 0; i < std::min(r.shape(0), r2.shape(0)); ++i) {
-#           glVertex3d(r(i, 0), r(i, 1), r(i, 2));
-#           glVertex3d(r2(i, 0), r2(i, 1), r2(i, 2));
-#       }
-#       glEnd();
-
-#       if(point_size > 0) {
-#           glPointSize(point_size);
-#           glBegin(GL_POINTS);
-#           for (ssize_t i = 0; i < std::min(r.shape(0), r2.shape(0)); ++i) {
-#               glVertex3d(r(i, 0), r(i, 1), r(i, 2));
-#               glVertex3d(r2(i, 0), r2(i, 1), r2(i, 2));
-#           }
-#           glEnd();
-#       }
-#   }
-
 def DrawLines(points, points2, point_size=0):
     r = points
     r2 = points2
@@ -68,18 +47,6 @@ def DrawLines(points, points2, point_size=0):
     gl.glEnd()
 
 
-#     void DrawPoints(py::array_t<double> points, py::array_t<double> colors) {
-#     auto r = points.unchecked<2>();
-#     auto rc = colors.unchecked<2>();
-
-#     glBegin(GL_POINTS);
-#     for (ssize_t i = 0; i < r.shape(0); ++i) {
-#         glColor3f(rc(i, 0), rc(i, 1), rc(i, 2));
-#         glVertex3d(r(i, 0), r(i, 1), r(i, 2));
-#     }
-#     glEnd();
-# }
-
 def DrawPoints(points, colors):
     r = points
     rc = colors
@@ -89,3 +56,35 @@ def DrawPoints(points, colors):
         gl.glColor3f(rc[i, 0], rc[i, 1], rc[i, 2])
         gl.glVertex3d(r[i, 0], r[i,1], r[i, 2])
     gl.glEnd()
+
+def DrawCameras(cameras, w=1.0, h_ratio=0.75, z_ratio=0.75):
+    r = cameras
+
+    print(r)
+    h = w * h_ratio
+    z = w * z_ratio
+
+    for i in range(0, r.shape[0]):
+        gl.glPushMatrix()
+        gl.glMultMatrixd(r[i, 0, 0])
+
+        gl.glBegin(gl.GL_LINES)
+        gl.glBegin(gl.GL_LINES);
+        gl.glVertex3f(0,0,0);
+        gl.glVertex3f(w,h,z);
+        gl.glVertex3f(0,0,0);
+        gl.glVertex3f(w,-h,z);
+        gl.glVertex3f(0,0,0);
+        gl.glVertex3f(-w,-h,z);
+        gl.glVertex3f(0,0,0);
+        gl.glVertex3f(-w,h,z);
+        gl.glVertex3f(w,h,z);
+        gl.glVertex3f(w,-h,z);
+        gl.glVertex3f(-w,h,z);
+        gl.glVertex3f(-w,-h,z);
+        gl.glVertex3f(-w,h,z);
+        gl.glVertex3f(w,h,z);
+        gl.glVertex3f(-w,-h,z);
+        gl.glVertex3f(w,-h,z);
+        gl.glEnd();
+        gl.glPopMatrix();
