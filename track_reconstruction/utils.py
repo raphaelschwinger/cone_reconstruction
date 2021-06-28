@@ -56,15 +56,13 @@ def rotation_matrix_from_vectors(vec1, vec2):
 def DrawLines(points, points2, point_size=0):
     r = points
     r2 = points2
-    gl.glLineWidth(10)
-    gl.glColor3f(0.5, 0.6, 0.9)
     gl.glBegin(gl.GL_LINES)
-    for i in range(r.shape[0], r2.shape[0]):
+    for i in range(0, min(r.shape[0], r2.shape[0])):
         gl.glVertex3d(r[i, 0], r[i, 1], r[i, 2])
         gl.glVertex3d(r2[i, 0], r2[i, 1], r2[i, 2])
     gl.glEnd()
     gl.glBegin(gl.GL_POINTS)
-    for i in range(r.shape[0], r2.shape[0]):
+    for i in range(0, min(r.shape[0], r2.shape[0])):
         gl.glVertex3d(r[i, 0], r[i, 1], r[i, 2])
         gl.glVertex3d(r2[i, 0], r2[i, 1], r2[i, 2])
     gl.glEnd()
