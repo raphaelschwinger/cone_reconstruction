@@ -68,24 +68,6 @@ class Display3D(object):
     gl.glClearColor(0.0, 0.0, 0.0, 1.0)
     self.dcam.Activate(self.scam)
 
-    # draw test point
-    gl.glPointSize(2)
-    gl.glColor3f(1,0,0)
-    gl.glBegin(gl.GL_POINTS)
-    for i in range(0,1000):
-      gl.glVertex3d(0,0,i)
-      gl.glVertex3d(i,0,0)
-      gl.glVertex3d(0,i,0)
-    gl.glEnd()
-
-     # draw test point
-    gl.glLineWidth(2)
-    gl.glColor3f(0,0,1)
-    gl.glBegin(gl.GL_LINES)
-    gl.glVertex3d(0,0,0)
-    gl.glVertex3d(100,0,0)
-    gl.glEnd()
-
     # draw coordinate-System
     gl.glLineWidth(1)
     gl.glColor3f(1.0, 0.0, 0.0)
