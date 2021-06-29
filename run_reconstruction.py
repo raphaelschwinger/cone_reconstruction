@@ -1,4 +1,5 @@
 import sys
+import argparse
 import os
 sys.path.append('/opt/app/lib')
 sys.path.append('/usr/local/lib/')
@@ -14,8 +15,17 @@ import numpy as np
 
 if __name__ == "__main__":
 
+	parser = argparse.ArgumentParser(description='Enter the image folder') 
+	parser.add_argument('dir_name', metavar='dir_name', type=str,
+                    help='Directory of images')
 
-	path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'blender-house/'))
+	args = parser.parse_args()
+ 
+	directory_name= args.dir_name  #'blender-house' or cone-track
+
+
+
+	path = os.path.abspath(os.path.join(os.path.dirname(__file__), directory_name))
 	image_paths = sorted([os.path.join(path, file) for file in os.listdir(path) if file.endswith(".png")])[:4]
 	points_paths = sorted([os.path.join(path, file) for file in os.listdir(path) if file.endswith(".p2d")])[:4]
 
@@ -40,7 +50,7 @@ if __name__ == "__main__":
 			# camera intrinsics
 		K = np.array([[F, 0, W//2], [0, F, H//2], [0, 0, 1]], dtype=np.float32)
 
-		track.processFrame(img, points_2D, K)
+		track.processFrame(img, points_2D , K)
 
 	disp3d.paint(track)
 
