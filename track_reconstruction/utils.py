@@ -61,8 +61,6 @@ def DrawPoints(points, colors):
 def DrawCameras(cameras, w=1.0, h_ratio=0.75, z_ratio=0.75):
     r = cameras
 
-    print(r)
-    print(r[0, 0, 0])
     h = w * h_ratio
     z = w * z_ratio
 
