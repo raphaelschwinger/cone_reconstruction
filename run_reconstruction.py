@@ -26,8 +26,8 @@ if __name__ == "__main__":
 
 
 	path = os.path.abspath(os.path.join(os.path.dirname(__file__), directory_name))
-	image_paths = sorted([os.path.join(path, file) for file in os.listdir(path) if file.endswith(".png")])[:4]
-	points_paths = sorted([os.path.join(path, file) for file in os.listdir(path) if file.endswith(".p2d")])[:4]
+	image_paths = sorted([os.path.join(path, file) for file in os.listdir(path) if file.endswith(".png")])[:6]
+	points_paths = sorted([os.path.join(path, file) for file in os.listdir(path) if file.endswith(".p2d")])[:6]
 
 	disp3d = Display3D()
 	track = Track()
@@ -40,12 +40,12 @@ if __name__ == "__main__":
 		H, W = img.shape[:2]
 		F = 1050
 
-		if W > 1024:
-			downscale = 1024.0 / W
-			F *= downscale
-			H = int(H * downscale)
-			W = 1024
-			print(f'scaled img down to {W}x{H}')
+		# if W > 1024:
+		# 	downscale = 1024.0 / W
+		# 	F *= downscale
+		# 	H = int(H * downscale)
+		# 	W = 1024
+		# 	print(f'scaled img down to {W}x{H}')
 
 			# camera intrinsics
 		K = np.array([[F, 0, W//2], [0, F, H//2], [0, 0, 1]], dtype=np.float32)
