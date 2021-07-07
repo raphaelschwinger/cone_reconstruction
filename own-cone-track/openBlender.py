@@ -5,8 +5,14 @@ import subprocess
 
 blenderPath = "/Applications/Blender.app/Contents/MacOS/Blender"
 
+# For ubuntu: location of where Blender is installed. run 'which blender' command to find out. 
+
+# blenderPath = "/snap/bin/blender" 
+
+blenderFile = "ownTrack.blend"
+
 path1 = "./"
 
 os.chdir(path1)
 
-subprocess.check_call([blenderPath, "ownTrack.blend"])
+subprocess.check_call([blenderPath, blenderFile])
