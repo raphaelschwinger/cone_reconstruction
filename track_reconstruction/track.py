@@ -87,6 +87,14 @@ class Map(object):
         assert points3D.shape == (len(self.points_3D), 3)
         for i in range(len(self.points_3D)):
             self.points_3D[i].position = points3D[i, :]
+    
+    # Print every points_3D
+    def print3DPoints(self):
+        for pt in self.points_3D:
+            print(f'3D Point: {pt.position}')
+
+
+
 
 
 class Track(object):
@@ -228,5 +236,8 @@ class Track(object):
             t = Rt[:3, 3]
 
             c.setPose(R=np.dot(R_global_inv, R), t=np.dot(R_global_inv, (t + t_global)))
+    
+    def printMap(self):
+        self.map.print3DPoints()
 
 

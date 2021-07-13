@@ -53,5 +53,7 @@ if __name__ == "__main__":
 		track.processFrame(img, points_2D , K)
 
 	disp3d.paint(track)
+	track.printMap()
+
 
 	input('Press enter to exit...')
