@@ -38,16 +38,10 @@ if __name__ == "__main__":
 		img = cv2.imread(image_path)
 		points_2D = np.loadtxt(points_path)
 		H, W = img.shape[:2]
-		F = 2400
+		# Focal Length of camera, see README of how to calculate
+		F = 1706.666
 
-		# if W > 1024:
-		# 	downscale = 1024.0 / W
-		# 	F *= downscale
-		# 	H = int(H * downscale)
-		# 	W = 1024
-		# 	print(f'scaled img down to {W}x{H}')
-
-			# camera intrinsics
+		# camera intrinsics
 		K = np.array([[F, 0, W//2], [0, F, H//2], [0, 0, 1]], dtype=np.float32)
 
 		track.processFrame(img, points_2D , K)
