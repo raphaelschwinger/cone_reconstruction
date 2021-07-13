@@ -38,7 +38,7 @@ if __name__ == "__main__":
 		img = cv2.imread(image_path)
 		points_2D = np.loadtxt(points_path)
 		H, W = img.shape[:2]
-		F = 1050
+		F = 2400
 
 		# if W > 1024:
 		# 	downscale = 1024.0 / W
