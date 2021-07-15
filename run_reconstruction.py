@@ -1,14 +1,14 @@
-import numpy as np
-from track_reconstruction.display import Display3D
-from track_reconstruction.track import Track
-import cv2
 import sys
-import argparse
 import os
+import cv2
+import numpy as np
+import argparse
 sys.path.append('/opt/app/lib')
 sys.path.append('/usr/local/lib/')
 sys.path.append(os.path.abspath(
     os.path.join(os.path.dirname(__file__), 'lib')))
+from track_reconstruction.display import Display3D
+from track_reconstruction.track import Track
 
 
 if __name__ == "__main__":
