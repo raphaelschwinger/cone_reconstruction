@@ -38,7 +38,7 @@ if __name__ == "__main__":
         points_2D = np.loadtxt(points_path)
         H, W = img.shape[:2]
         # Focal Length of camera, see README of how to calculate
-        F = 1706.666
+        F = 800
 
         # camera intrinsics
         K = np.array([[F, 0, W//2], [0, F, H//2], [0, 0, 1]], dtype=np.float32)
