@@ -112,15 +112,14 @@ class Track(object):
         self.cameras.append(cam)
         cam_id = len(self.cameras) - 1
 
-        names = ['gelb', 'gruen', 'blau', 'orange', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
         colors = [(255, 255, 0), (0, 255, 0), (0, 0, 255), (255, 128, 0)]
 
         # debug Bild
-        # for i, point in enumerate(points_2D):
-        #     cv2.circle(img, (int(point[0]), int(point[1])), 1, (255, 0, 0), -1)
-        #     cv2.putText(img, names[i] if i < len(names) else 'tba', (int(point[0]) + 10, int(point[1]) + 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 1)
-        # cv2.imshow('debug', img)
-        # cv2.waitKey(0)
+        for i, point in enumerate(points_2D):
+            cv2.circle(img, (int(point[0]), int(point[1])), 1, (255, 0, 0), -1)
+            cv2.putText(img, str(i+1), (int(point[0]) + 10, int(point[1]) + 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 1)
+        cv2.imshow('debug', img)
+        cv2.waitKey(0)
 
 
         # Wenn es der erste Frame ist, können wir noch nichts tun
