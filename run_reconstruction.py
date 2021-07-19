@@ -24,9 +24,9 @@ if __name__ == "__main__":
     path = os.path.abspath(os.path.join(
         os.path.dirname(__file__), directory_name))
     image_paths = sorted([os.path.join(path, file)
-                         for file in os.listdir(path) if file.endswith(".png")])[:6]
+                         for file in os.listdir(path) if file.endswith(".png")])[:3]
     points_paths = sorted([os.path.join(path, file)
-                          for file in os.listdir(path) if file.endswith(".p2d")])[:6]
+                          for file in os.listdir(path) if file.endswith(".p2d")])[:3]
 
     disp3d = Display3D()
     track = Track()
