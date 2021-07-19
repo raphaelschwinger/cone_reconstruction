@@ -90,8 +90,10 @@ class Map(object):
     
     # Print every points_3D
     def print3DPoints(self):
+        open('reconstruction.p3d', 'w').close()
         for pt in self.points_3D:
-            print(f'3D Point: {pt.position}')
+            with open('reconstruction.p3d', 'a') as f:
+                print(f'{pt.position[0]};{pt.position[1]};{pt.position[2]}', file=f)
 
 
 
