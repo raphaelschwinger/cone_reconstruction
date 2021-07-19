@@ -106,11 +106,11 @@ class Track(object):
         colors = [(255, 255, 0), (0, 255, 0), (0, 0, 255), (255, 128, 0)]
 
         # debug Bild
-		# for i, point in enumerate(points_2D):
-		# 	cv2.circle(img, (int(point[0]), int(point[1])), 1, (255, 0, 0), -1)
-		# 	cv2.putText(img, names[i] if i < len(names) else 'tba', (int(point[0]) + 10, int(point[1]) + 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 1)
-		# cv2.imshow('debug', img)
-		# cv2.waitKey(0)
+        # for i, point in enumerate(points_2D):
+        #     cv2.circle(img, (int(point[0]), int(point[1])), 1, (255, 0, 0), -1)
+        #     cv2.putText(img, names[i] if i < len(names) else 'tba', (int(point[0]) + 10, int(point[1]) + 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 1)
+        # cv2.imshow('debug', img)
+        # cv2.waitKey(0)
 
 
         # Wenn es der erste Frame ist, können wir noch nichts tun
@@ -138,7 +138,7 @@ class Track(object):
                 pl1 = np.dot(self.cameras[0].getP(), p)
                 pl2 = np.dot(self.cameras[cam_id].getP(), p)
                 if pl1[2] < 0 or pl2[2] < 0:
-                    print('not in front')
+                    print('not in front', i)
                     continue
 
                 # check reprojection error
