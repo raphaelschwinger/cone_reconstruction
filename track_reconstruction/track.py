@@ -138,7 +138,7 @@ class Track(object):
                 pl1 = np.dot(self.cameras[0].getP(), p)
                 pl2 = np.dot(self.cameras[cam_id].getP(), p)
                 if pl1[2] < 0 or pl2[2] < 0:
-                    print('not in front', pl1, pl2, i, p)
+                    print('not in front', i)
                     continue
 
                 # check reprojection error
