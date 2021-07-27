@@ -47,4 +47,7 @@ if __name__ == "__main__":
 
     disp3d.paint(track)
 
+    track.printMap()
+
+
     input('Press enter to exit...')
