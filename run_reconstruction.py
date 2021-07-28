@@ -23,31 +23,64 @@ if __name__ == "__main__":
 
     path = os.path.abspath(os.path.join(
         os.path.dirname(__file__), directory_name))
-    image_paths = sorted([os.path.join(path, file)
-                         for file in os.listdir(path) if file.endswith(".png")])[:3]
-    points_paths = sorted([os.path.join(path, file)
-                          for file in os.listdir(path) if file.endswith(".p2d")])[:3]
+
 
     disp3d = Display3D()
-    track = Track()
 
-    for image_path, points_path in zip(image_paths, points_paths):
-        print(f'adding image {image_path}')
+    # save reconstructed points in array
+    reconstruction = []
+    allReconstructedPoints = []
 
-        img = cv2.imread(image_path)
-        points_2D = np.loadtxt(points_path)
-        H, W = img.shape[:2]
-        # Focal Length of camera, see README of how to calculate
-        F = 800
+    # iterate through all frames
+    frame_dir_path = os.path.join(path, 'frames') 
+    frames = sorted([os.path.join(frame_dir_path, frame_dir)
+                     for frame_dir in os.listdir(frame_dir_path)])
 
-        # camera intrinsics
-        K = np.array([[F, 0, W//2], [0, F, H//2], [0, 0, 1]], dtype=np.float32)
+    for frame_path in frames:
+        track = Track()
 
-        track.processFrame(img, points_2D, K)
+        #  load image paths and point paths
+        image_paths = sorted([os.path.join(frame_path, file)
+                         for file in os.listdir(frame_path) if file.endswith(".png")])[:3]
+        points_paths = sorted([os.path.join(frame_path, file)
+                          for file in os.listdir(frame_path) if file.endswith(".p2d")])[:3]
 
-    disp3d.paint(track)
+        for image_path, points_path in zip(image_paths, points_paths):
+            print(f'adding image {image_path}')
 
-    track.printMap()
+            # load image
+            img = cv2.imread(image_path)
+            # load point of car
+            car_2D = np.loadtxt(points_path)
+            
+            # add cone positions
+            filename = points_path.split(os.sep)[-1]
+            points_2D = np.loadtxt(os.path.join(path, filename))
+            points_2D = np.append(points_2D, [car_2D], axis=0)
+            H, W = img.shape[:2]
+            # Focal Length of camera, see README of how to calculate
+            F = 800
 
+            # camera intrinsics
+            K = np.array([[F, 0, W//2], [0, F, H//2], [0, 0, 1]], dtype=np.float32)
+
+            position = track.processFrame(img, points_2D, K)
+            allReconstructedPoints.append(position)
+
+    # disp3d.paint(track)
+
+    # track.printMap()
+
+    # get every third point in reconstruction
+    for i in range(0, len(allReconstructedPoints), 3):
+        reconstruction.append(allReconstructedPoints[i+2])
+            
+
+    # reset reconstruction file
+    open('car_reconstruction.p3d', 'w').close()
+    # save reconstructed points in file
+    with open('car_reconstruction.p3d', 'a') as f:
+        for point in reconstruction:
+            print(point, file=f)
 
     input('Press enter to exit...')
