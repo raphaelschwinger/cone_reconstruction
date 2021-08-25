@@ -1,14 +1,12 @@
-import cv2
 import sys
- 
-(major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
+import cv2
  
 if __name__ == '__main__' :
  
     tracker_types = ['KCF', 'CSRT']
     tracker_type = tracker_types[1]
  
-   
+#  two trackers that can be tested, CSRT seems to perform better  
     if tracker_type == 'KCF':
         tracker = cv2.TrackerKCF_create()
     elif tracker_type == "CSRT":
