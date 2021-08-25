@@ -16,18 +16,8 @@ if __name__ == "__main__":
     print('known points: ', known_points_3d)
 
 	# load 3d points from file
-    parser = argparse.ArgumentParser(description='Enter the 3d point file')
-    parser.add_argument('file_name', metavar='file_name', type=str,
-                        help='name of the 3d pint file')
-
-    args = parser.parse_args()
-
-    file_name = args.file_name
-
-    path = os.path.abspath(os.path.join(
-        os.path.dirname(__file__), file_name))
-    
-    points_3D = np.loadtxt(path, delimiter=';')
+     
+    points_3D = np.loadtxt('./reconstruction.p3d', delimiter=';')
 
     print('reconstructed points: ', points_3D)
 
@@ -53,6 +43,29 @@ if __name__ == "__main__":
 
     print('Transformed point: ', trans_points_3D)
 
+
+    # load car_reconstruction
+    car_points_3D = np.loadtxt('car_reconstruction.p3d', delimiter=';')
+    trans_points_3D = np.zeros(car_points_3D.shape, np.float32)
+
+    for i in range(len(car_points_3D)):
+        # add dimension
+        p_4d = np.zeros((4,1), np.float32)
+        p_4d[0] = car_points_3D[i][0]
+        p_4d[1] = car_points_3D[i][1]
+        p_4d[2] = car_points_3D[i][2]
+        p_4d[3] = 1.0
+        trans_point = np.dot(mat, p_4d)
+        print(trans_point)
+        # transform (3,1) to 3 and store in array
+        trans_points_3D[i] = trans_point.ravel()
+
+    # reset reconstruction file
+    open('./car_transformed.p3d', 'w').close()
+    # save reconstructed points in file
+    with open('./car_transformed.p3d', 'a') as f:
+        for point in trans_points_3D:
+            print(point, file=f)
   
 
     

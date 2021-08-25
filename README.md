@@ -32,7 +32,7 @@ res_y = render.resolution_y
 
 # render cameras and save images
 
-# loop through cammera collection
+# loop through camera collection
 cameraCollection = bpy.data.collections['Cameras']
 for camera in cameraCollection.objects:
     bpy.context.scene.camera = camera
@@ -59,6 +59,33 @@ for camera in cameraCollection.objects:
                     )
         with open(camera.name + '.p2d', 'a') as f:
             print(f'{co_2d.x * render_size[0]} {res_y - co_2d.y * render_size[1]}', file=f)
+```
+
+### Script to output renderd animation video
+
+```python
+import bpy
+import bpy_extras
+
+scene = bpy.context.scene
+
+# needed to rescale 2d coordinates
+render = scene.render
+res_x = render.resolution_x
+res_y = render.resolution_y
+
+print('test')
+
+# render cameras and save images
+
+# loop through camera collection
+cameraCollection = bpy.data.collections['Cameras']
+for camera in cameraCollection.objects:
+    print(camera.name)
+    bpy.context.scene.camera = camera
+    bpy.context.scene.render.filepath = './' + camera.name + '-video'
+    bpy.context.scene.render.image_settings.file_format = 'AVI_JPEG'
+    bpy.ops.render.render(animation=True, use_viewport=False)
 ```
 
 ### Script to get camera_matrix from blende

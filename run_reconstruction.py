@@ -80,7 +80,7 @@ if __name__ == "__main__":
     open('car_reconstruction.p3d', 'w').close()
     # save reconstructed points in file
     with open('car_reconstruction.p3d', 'a') as f:
-        for point in reconstruction:
-            print(point, file=f)
+        for pt in reconstruction:
+            print(f'{pt[0]};{pt[1]};{pt[2]}', file=f)
 
     input('Press enter to exit...')
