@@ -115,11 +115,11 @@ class Track(object):
         colors = [(255, 255, 0), (0, 255, 0), (0, 0, 255), (255, 128, 0)]
 
         # debug Bild
-        for i, point in enumerate(points_2D):
-            cv2.circle(img, (int(point[0]), int(point[1])), 1, (255, 0, 0), -1)
-            cv2.putText(img, str(i+1), (int(point[0]) + 10, int(point[1]) + 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 1)
-        cv2.imshow('debug', img)
-        cv2.waitKey(0)
+        # for i, point in enumerate(points_2D):
+        #     cv2.circle(img, (int(point[0]), int(point[1])), 1, (255, 0, 0), -1)
+        #     cv2.putText(img, str(i+1), (int(point[0]) + 10, int(point[1]) + 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0), 1)
+        # cv2.imshow('debug', img)
+        # cv2.waitKey(0)
 
 
         # Wenn es der erste Frame ist, können wir noch nichts tun
@@ -180,6 +180,9 @@ class Track(object):
             print(f'error before optimization: {self.calculateReprojectionError()}')
             err = self.optimize(fix_points=False)
             print(f'error after optimization: {self.calculateReprojectionError()}')
+        
+        # return 3DPoint of last point
+        return self.map.getPointsAs3DArray()[-1]
 
     
     def optimize(self, local_window=LOCAL_WINDOW, fix_points=False, verbose=False, rounds=50):
