@@ -59,7 +59,7 @@ if __name__ == "__main__":
             points_2D = np.append(points_2D, [car_2D], axis=0)
             H, W = img.shape[:2]
             # Focal Length of camera, see README of how to calculate
-            F = 800
+            F = 1707
 
             # camera intrinsics
             K = np.array([[F, 0, W//2], [0, F, H//2], [0, 0, 1]], dtype=np.float32)
