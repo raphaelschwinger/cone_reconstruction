@@ -29,6 +29,7 @@ if __name__ == "__main__":
 
     # save reconstructed points in array
     reconstruction = []
+    # all reconstructed points are the points from every camera
     allReconstructedPoints = []
 
     # iterate through all frames
@@ -64,23 +65,33 @@ if __name__ == "__main__":
             # camera intrinsics
             K = np.array([[F, 0, W//2], [0, F, H//2], [0, 0, 1]], dtype=np.float32)
 
-            position = track.processFrame(img, points_2D, K)
-            allReconstructedPoints.append(position)
+            positions = track.processFrame(img, points_2D, K)
+            allReconstructedPoints.append(positions)
 
     # disp3d.paint(track)
 
     # track.printMap()
 
-    # get every third point in reconstruction
+    # get every third point in reconstruction as the last camera improves the results of the ones before only every third is interesting
     for i in range(0, len(allReconstructedPoints), 3):
         reconstruction.append(allReconstructedPoints[i+2])
             
-
+    # save cone reconstruction
     # reset reconstruction file
-    open('car_reconstruction.p3d', 'w').close()
+    open(os.path.join(frame_path, 'cone_reconstruction.p3d'), 'w').close()
     # save reconstructed points in file
-    with open('car_reconstruction.p3d', 'a') as f:
-        for pt in reconstruction:
-            print(f'{pt[0]};{pt[1]};{pt[2]}', file=f)
+    with open(os.path.join(frame_path, 'cone_reconstruction.p3d'), 'a') as f:
+        for pts in reconstruction:
+            for p in pts:
+                print(f'{p[0]};{p[1]};{p[2]}', file=f)
+
+    # save car reconstruction
+    # reset reconstruction file
+    open(os.path.join(frame_path, 'car_reconstruction.p3d'), 'w').close()
+    # save reconstructed points in file
+    with open(os.path.join(frame_path, 'car_reconstruction.p3d'), 'a') as f:
+        for pts in reconstruction:
+            print(f'{pts[-1][0]};{pts[-1][1]};{pts[-1][2]}', file=f)
 
     input('Press enter to exit...')
+

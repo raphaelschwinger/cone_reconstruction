@@ -8,6 +8,21 @@ Heavily based on https://github.com/geohot/twitchslam
 Open Folder inside [Dev Container](https://code.visualstudio.com/docs/remote/create-dev-container)
 Access GUI at http://localhost:8080/vnc.html
 
+## Run Reconstruction
+
+The main python script to start the reconstruction is `run_reconstruction.py`. As a parameter it expects a foldername.
+In this folder the following things should be present:
+- a `.png` file containing the first frame for every camera, named `01.png` respectivly
+- a `.p2d` file containing the 2D points of the cones for every camera, named `01.p2d` respectivly
+- a folder called `frames` containing folders for every frame, in each of those:
+    -  `.p2d` file representing the 2D coordinates of the car for every camera, named `01.p2d` respectivly
+
+```bash
+python run_reconstruction.py blender-racetrack
+```
+
+As a result the reconstructed 3D points of the car and the cones are saved in the files `car_reconstruction.p3d` and `cone_reconstruction.p3d`. Those coordinates are in relation to the first camera so they need to be transformed to be human readable.
+
 ## Blender
 
 We use [Blender](https://www.blender.org/) to generate test images for reconstruction.

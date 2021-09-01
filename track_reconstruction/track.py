@@ -182,7 +182,7 @@ class Track(object):
             print(f'error after optimization: {self.calculateReprojectionError()}')
         
         # return 3DPoint of last point
-        return self.map.getPointsAs3DArray()[-1]
+        return self.map.getPointsAs3DArray()
 
     
     def optimize(self, local_window=LOCAL_WINDOW, fix_points=False, verbose=False, rounds=50):
