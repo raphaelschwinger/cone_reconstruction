@@ -83,7 +83,7 @@ if __name__ == '__main__' :
 
         # save car tracking coordinates
         # reset transformation file
-        open(os.path.join(current_frame_path, cam_name +  '.p3d'), 'w').close()
+        open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'w').close()
  
         # Draw bounding box
         if ok:
@@ -92,7 +92,7 @@ if __name__ == '__main__' :
             p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
             print(p1,p2)
             # save reconstructed points in file
-            with open(os.path.join(current_frame_path, cam_name +  '.p3d'), 'a') as f:
+            with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
                 print(f'{(p1[0] + p2[0]) / 2 } {(p1[1] + p2[1]) / 2 }', file=f)
             
             cv2.rectangle(frame, p1, p2, (255,0,0), 2, 1)

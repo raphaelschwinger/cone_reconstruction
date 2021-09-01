@@ -155,8 +155,8 @@ class Track(object):
                 pp2 = (pl2[0:2] / pl2[2]) - self.cameras[cam_id].points_2D[i]
                 pp1 = np.sum(pp1**2)
                 pp2 = np.sum(pp2**2)
-                if pp1 > 2 or pp2 > 2:
-                    print(f'reproject error {pp1}, {pp2} for cone {names[i]}')
+                # if pp1 > 2 or pp2 > 2:
+                #     print(f'reproject error {pp1}, {pp2} for cone {names[i]}')
 
                 # add the point
                 if i < len(colors):
