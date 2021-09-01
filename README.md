@@ -23,6 +23,19 @@ python run_reconstruction.py blender-racetrack
 
 As a result the reconstructed 3D points of the car and the cones are saved in the files `car_reconstruction.p3d` and `cone_reconstruction.p3d`. Those coordinates are in relation to the first camera so they need to be transformed to be human readable.
 
+## Transform points
+
+To transform the reconstructed points back to the coordinate system set in blender use the steps:
+* write the coordinates of the first 4 points in `cone_reconstruction.p3d` in a file named `known_points`
+
+```bash
+python transform.py blender-racetrack
+```
+
+A affine transformation matrix is calculated and applied to the points in `cone_reconstruction.p3d` and saved in `cone_transformation.p3d`.
+
+
+
 ## Blender
 
 We use [Blender](https://www.blender.org/) to generate test images for reconstruction.
