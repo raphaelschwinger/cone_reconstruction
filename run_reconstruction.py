@@ -78,18 +78,18 @@ if __name__ == "__main__":
             
     # save cone reconstruction
     # reset reconstruction file
-    open(os.path.join(frame_path, 'cone_reconstruction.p3d'), 'w').close()
+    open(os.path.join(path, 'cone_reconstruction.p3d'), 'w').close()
     # save reconstructed points in file
-    with open(os.path.join(frame_path, 'cone_reconstruction.p3d'), 'a') as f:
+    with open(os.path.join(path, 'cone_reconstruction.p3d'), 'a') as f:
         for pts in reconstruction:
             for p in pts:
                 print(f'{p[0]};{p[1]};{p[2]}', file=f)
 
     # save car reconstruction
     # reset reconstruction file
-    open(os.path.join(frame_path, 'car_reconstruction.p3d'), 'w').close()
+    open(os.path.join(path, 'car_reconstruction.p3d'), 'w').close()
     # save reconstructed points in file
-    with open(os.path.join(frame_path, 'car_reconstruction.p3d'), 'a') as f:
+    with open(os.path.join(path, 'car_reconstruction.p3d'), 'a') as f:
         for pts in reconstruction:
             print(f'{pts[-1][0]};{pts[-1][1]};{pts[-1][2]}', file=f)
 
