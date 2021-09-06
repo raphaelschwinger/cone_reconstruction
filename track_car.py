@@ -34,7 +34,7 @@ if __name__ == '__main__' :
         tracker = cv2.TrackerCSRT_create()
 
     # Read video
-    video_path = os.path.join(path, cam_name + '-video0001-0080.avi') 
+    video_path = os.path.join(path, cam_name + '-video0001-0175.avi') 
     video = cv2.VideoCapture(video_path)
     # video = cv2.VideoCapture(0) # for using CAM
  
