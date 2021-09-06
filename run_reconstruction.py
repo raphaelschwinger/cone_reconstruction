@@ -40,7 +40,7 @@ if __name__ == "__main__":
     frames = sorted([os.path.join(frame_dir_path, frame_dir)
                      for frame_dir in os.listdir(frame_dir_path)])
 
-    for frame_path in frames:
+    for frame_path in frames[:2]:
         print(frame_path)
         track = Track()
 
@@ -93,11 +93,8 @@ if __name__ == "__main__":
     # save reconstructed points in file
     with open(os.path.join(path, 'cone_reconstruction.p3d'), 'a') as f:
         for pts in reconstruction:
-            if (pts and pts.shape and pts.shape[0] > 0):
-                for p in pts:
-                    print(f'{p[0]};{p[1]};{p[2]}', file=f)
-            else:
-                print('not available', file=f)
+            for p in pts:
+                print(f'{p[0]};{p[1]};{p[2]}', file=f)
 
     # save car reconstruction
     # reset reconstruction file
