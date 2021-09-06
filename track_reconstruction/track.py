@@ -147,7 +147,7 @@ class Track(object):
                 pl1 = np.dot(self.cameras[0].getP(), p)
                 pl2 = np.dot(self.cameras[cam_id].getP(), p)
                 if pl1[2] < 0 or pl2[2] < 0:
-                    print('not in front', i)
+                    print('not in front', i, p, self.cameras[0].points_2D[i])
                     continue
 
                 # check reprojection error
@@ -155,8 +155,8 @@ class Track(object):
                 pp2 = (pl2[0:2] / pl2[2]) - self.cameras[cam_id].points_2D[i]
                 pp1 = np.sum(pp1**2)
                 pp2 = np.sum(pp2**2)
-                if pp1 > 2 or pp2 > 2:
-                    print(f'reproject error {pp1}, {pp2} for cone {names[i]}')
+                # if pp1 > 2 or pp2 > 2:
+                #     print(f'reproject error {pp1}, {pp2} for cone {names[i]}')
 
                 # add the point
                 if i < len(colors):
@@ -182,7 +182,7 @@ class Track(object):
             print(f'error after optimization: {self.calculateReprojectionError()}')
         
         # return 3DPoint of last point
-        return self.map.getPointsAs3DArray()[-1]
+        return self.map.getPointsAs3DArray()
 
     
     def optimize(self, local_window=LOCAL_WINDOW, fix_points=False, verbose=False, rounds=50):
