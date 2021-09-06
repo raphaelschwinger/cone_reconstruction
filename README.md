@@ -8,6 +8,15 @@ Heavily based on https://github.com/geohot/twitchslam
 Open Folder inside [Dev Container](https://code.visualstudio.com/docs/remote/create-dev-container)
 Access GUI at http://localhost:8080/vnc.html
 
+## Install Dependencies and get rendered video files
+
+To install python dependencies run 
+```bash
+pip install -r ./requirements
+```
+
+The rendered image files are to big to version track (and its not a best practise), you can render them localy from in the script tab of the blender file. To open the Blenderfile you can use the `openBlender.py` script inside a blender directory.
+
 ## Run Reconstruction
 
 The main python script to start the reconstruction is `run_reconstruction.py`. As a parameter it expects a foldername.
