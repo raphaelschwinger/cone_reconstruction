@@ -40,7 +40,7 @@ if __name__ == "__main__":
     frames = sorted([os.path.join(frame_dir_path, frame_dir)
                      for frame_dir in os.listdir(frame_dir_path)])
 
-    for frame_path in frames[:2]:
+    for frame_path in frames[:77]:
         print(frame_path)
         track = Track()
 
