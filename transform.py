@@ -62,27 +62,29 @@ if __name__ == "__main__":
 
 
     # # load car_reconstruction
-    # car_points_3D = np.loadtxt('car_reconstruction.p3d', delimiter=';')
-    # trans_points_3D = np.zeros(car_points_3D.shape, np.float32)
+    car_points_3D = np.loadtxt(os.path.join(path, 'car_reconstruction.p3d'), delimiter=';')
+    car_trans_points_3D = np.zeros(car_points_3D.shape, np.float32)
 
-    # for i in range(len(car_points_3D)):
-    #     # add dimension
-    #     p_4d = np.zeros((4,1), np.float32)
-    #     p_4d[0] = car_points_3D[i][0]
-    #     p_4d[1] = car_points_3D[i][1]
-    #     p_4d[2] = car_points_3D[i][2]
-    #     p_4d[3] = 1.0
-    #     trans_point = np.dot(mat, p_4d)
-    #     print(trans_point)
-    #     # transform (3,1) to 3 and store in array
-    #     trans_points_3D[i] = trans_point.ravel()
+    for i in range(len(car_points_3D)):
+        # add dimension
+        p_4d = np.zeros((4,1), np.float32)
+        p_4d[0] = car_points_3D[i][0]
+        p_4d[1] = car_points_3D[i][1]
+        p_4d[2] = car_points_3D[i][2]
+        p_4d[3] = 1.0
+        trans_point = np.dot(mat, p_4d)
+        print(trans_point)
+        # transform (3,1) to 3 and store in array
+        car_trans_points_3D[i] = trans_point.ravel()
+    
+    # save cone transformation
+    # reset transformation file
+    open(os.path.join(path, 'car_transformation.p3d'), 'w').close()
+    # save reconstructed points in file
+    with open(os.path.join(path, 'car_transformation.p3d'), 'a') as f:
+        for p in car_trans_points_3D:
+            print(f'{round(float(p[0]), 3)};{round(float(p[1]), 3)};{round(float(p[2]), 3)}', file=f)
 
-    # # reset reconstruction file
-    # open(os.path.join(path, './car_transformed.p3d'), 'w').close()
-    # # save reconstructed points in file
-    # with open(os.path.join(path, './car_transformed.p3d'), 'a') as f:
-    #     for point in trans_points_3D:
-    #         print(point, file=f)
   
 
     
