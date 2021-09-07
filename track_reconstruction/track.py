@@ -181,7 +181,7 @@ class Track(object):
             err = self.optimize(fix_points=False)
             print(f'error after optimization: {self.calculateReprojectionError()}')
         
-        # return 3DPoint of last point
+        # return 3DPoints
         return self.map.getPointsAs3DArray()
 
     

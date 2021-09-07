@@ -40,7 +40,7 @@ if __name__ == "__main__":
     frames = sorted([os.path.join(frame_dir_path, frame_dir)
                      for frame_dir in os.listdir(frame_dir_path)])
 
-    for frame_path in frames[:77]:
+    for frame_path in frames:
         print(frame_path)
         track = Track()
 
@@ -63,6 +63,7 @@ if __name__ == "__main__":
             points_2D = np.loadtxt(os.path.join(path, filename))
             # check if points2d is not empty
             if points_2D.shape[0] > 0 and car_2D.shape[0] > 0:
+                # append car points
                 points_2D = np.append(points_2D, [car_2D], axis=0)
                 # load image
                 image_filename = re.sub('\.p2d', '', filename) + '.png'
@@ -82,7 +83,7 @@ if __name__ == "__main__":
 
     # track.printMap()
 
-    # get every third point in reconstruction as the last camera improves the results of the ones before only every third is interesting
+    # get every third point in reconstruction as the last camera improves the results of the ones before, so only every third point array is interesting
     for i in range(0, len(allReconstructedPoints), 3):
         if (i + 2) < len(allReconstructedPoints):
             reconstruction.append(allReconstructedPoints[i+2])
@@ -92,7 +93,7 @@ if __name__ == "__main__":
     open(os.path.join(path, 'cone_reconstruction.p3d'), 'w').close()
     # save reconstructed points in file
     with open(os.path.join(path, 'cone_reconstruction.p3d'), 'a') as f:
-        for pts in reconstruction:
+        for pts in reconstruction[:1]:
             for p in pts:
                 print(f'{p[0]};{p[1]};{p[2]}', file=f)
 
