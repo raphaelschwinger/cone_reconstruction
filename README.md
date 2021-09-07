@@ -267,3 +267,56 @@ if __name__ == "__main__":
     #nP = numpy.matrix(P)
     #numpy.savetxt("/tmp/P3x4.txt", nP)  # to select precision, use e.g. fmt='%.2f'
 ```
+
+### Car position data from blender
+
+```python
+file_path = os.path.abspath(os.path.dirname(__file__))
+path = os.path.dirname(file_path)
+#path = os.path.split(os.getcwd())[0]
+frame_dir_path = os.path.join(path, 'frames') 
+
+scene = bpy.context.scene
+
+# needed to rescale 2d coordinates
+# needed to rescale 2d coordinates
+render = scene.render
+res_x = render.resolution_x
+res_y = render.resolution_y
+
+for f in range(scene.frame_start, scene.frame_end + 1, scene.frame_step):
+    current_frame_path = os.path.join(frame_dir_path,str(f).zfill(4))
+    os.makedirs(current_frame_path, exist_ok=True)
+
+    # go to frame f
+    scene.frame_set(f)
+
+    # render cameras and save images
+
+    # loop through cammera collection
+    cameraCollection = bpy.data.collections['Cameras']
+    for camera in cameraCollection.objects:
+        bpy.context.scene.camera = camera
+        bpy.context.scene.render.filepath = './frames/' + str(f).zfill(4) + '/' + camera.name
+        bpy.context.scene.render.image_settings.file_format='PNG'
+        bpy.ops.render.render(use_viewport=False, write_still=False)
+
+        # erease content of .p2d file
+        open(os.path.join(current_frame_path, camera.name +  '.p2d'), 'w').close()
+
+        # iterate through cones
+        car = bpy.data.objects['whole_car']
+        # get 3d coordinates of cone
+        location = car.location.copy()
+        # location is the bottom of a cone and not the tip, the cone is 25cm high
+        location[2] = car.location[2]
+        co_2d = bpy_extras.object_utils.world_to_camera_view(scene, camera, location)
+        # If you want pixel coords
+        render_scale = scene.render.resolution_percentage / 100
+        render_size = (
+                int(scene.render.resolution_x * render_scale),
+                int(scene.render.resolution_y * render_scale),
+                    )
+        with open(os.path.join(current_frame_path, camera.name +  '.p2d'), 'a') as file:
+            print(f'{co_2d.x * render_size[0]} {res_y - co_2d.y * render_size[1]}', file=file)
+```
