@@ -7,6 +7,17 @@ directory_name = os.path.abspath(os.path.dirname(__file__))
 results = sorted([os.path.join(directory_name, frame_dir)
                  for frame_dir in os.listdir(directory_name)])
 
+# load position data from blender
+blender_cone_path = os.path.join(directory_name, 'cone_position.p3d')
+blender_cone_points_3D = np.loadtxt(blender_cone_path, delimiter=';')
+plt.plot(blender_cone_points_3D[:, 0], blender_cone_points_3D[:, 1], 'r^')
+
+# load car position data from blender
+blender_car_path = os.path.join(directory_name, 'car_position.p3d')
+blender_car_points_3D = np.loadtxt(blender_car_path, delimiter=';')
+plt.plot(blender_car_points_3D[:, 0],
+         blender_car_points_3D[:, 1], label='real position'.format('r'))
+
 i = 0
 for result_path in results:
     i += 1
