@@ -147,4 +147,21 @@ for result_path in results:
         plt.ylabel("Mean squared error", labelpad=15)
         plt.xticks([])
 
+
+# plot optimization error
+fig = plt.figure(5)
+i = 0
+for result_path in results:
+    # check if result is a directory
+    if os.path.isdir(result_path):
+        i += 1
+        error = np.loadtxt(os.path.join(
+            result_path, 'optimization_errors.txt'), delimiter=';')
+        dir_name = os.path.basename(result_path)
+        plt.plot(error, label=dir_name, color=color[i % 3])
+        plt.legend(loc='best')
+        plt.ylabel("optimization error", labelpad=15)
+        plt.xlabel("frame")
+
+
 plt.show()
