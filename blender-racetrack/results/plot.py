@@ -100,8 +100,6 @@ plt.xlabel("X position", labelpad=15)
 
 # Calculate MSE
 fig = plt.figure(3)
-
-
 i = 0
 for result_path in results:
     # check if result is a directory
@@ -121,5 +119,32 @@ for result_path in results:
         plt.ylabel("Mean squared error", labelpad=15)
         plt.xticks([])
 
+
+# MSE for normalized points
+fig = plt.figure(4)
+i = 0
+for result_path in results:
+    # check if result is a directory
+    if os.path.isdir(result_path):
+        i += 1
+        points_3D = np.loadtxt(os.path.join(
+            result_path, 'car_transformation.p3d'), delimiter=';')
+
+        # normalize points in relation to first car position
+        # calculate delta to first car position
+        delta_points_3D = blender_car_points_3D[0] - points_3D[0]
+        for point_3D in points_3D:
+            point_3D += delta_points_3D
+
+        # calculate MSE
+        mse = np.mean(np.square(points_3D - blender_car_points_3D))
+        # dir_name
+        dir_name = os.path.basename(result_path)
+        print(dir_name, mse)
+        plt.text(i + 0.45, mse + 0.01, str(round(mse, 2)), fontweight='bold')
+        plt.bar(i, mse, 1, label=dir_name, color=color[i % 3])
+        plt.legend(loc='best')
+        plt.ylabel("Mean squared error", labelpad=15)
+        plt.xticks([])
 
 plt.show()
