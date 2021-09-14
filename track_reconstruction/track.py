@@ -124,7 +124,7 @@ class Track(object):
 
         # Wenn es der erste Frame ist, können wir noch nichts tun
         if cam_id == 0:
-            return
+            return [], 0
 
         if cam_id == 1:
             # get relative Pose from the current camera to reference camera
@@ -182,7 +182,9 @@ class Track(object):
             print(f'error after optimization: {self.calculateReprojectionError()}')
         
         # return 3DPoints
-        return self.map.getPointsAs3DArray()
+        points = self.map.getPointsAs3DArray()
+        error = self.calculateReprojectionError()
+        return points, error
 
     
     def optimize(self, local_window=LOCAL_WINDOW, fix_points=False, verbose=False, rounds=50):
