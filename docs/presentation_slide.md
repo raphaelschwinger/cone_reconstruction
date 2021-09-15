@@ -24,8 +24,15 @@ marp: true
   -  A ground truth of the race track has to be generated.  
   -  The position of the car has to be recorded during a race. 
 
-- Taking the position of the cones and using 3D scene reconstruction using images/videos of the race-track. 
+- Possible methods
+  - **Image based Triangulation** : Taking the position of the cones and using 3D scene reconstruction using images/videos of the race-track. 	
+  - UWB based Triangulation
+  - LiDAR
+  - Ultrasonic sensors
+  - IMUs	
 
+
+---
 -  **Environment Setup**
      -  Dev Container:
      -  Pypangolin version error fix description
