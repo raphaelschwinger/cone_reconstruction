@@ -27,13 +27,15 @@ if __name__ == "__main__":
     path = os.path.abspath(os.path.join(
         os.path.dirname(__file__), directory_name))
 
-
     disp3d = Display3D()
 
     # save reconstructed points in array
     reconstruction = []
     # all reconstructed points are the points from every camera
     allReconstructedPoints = []
+    # save all error
+    allErrors = []
+    errors = []
 
     # iterate through all frames
     frame_dir_path = os.path.join(path, 'frames') 
@@ -76,8 +78,10 @@ if __name__ == "__main__":
                 # camera intrinsics
                 K = np.array([[F, 0, W//2], [0, F, H//2], [0, 0, 1]], dtype=np.float32)
     
-                positions = track.processFrame(img, points_2D, K)
-                allReconstructedPoints.append(positions)
+                points, error = track.processFrame(img, points_2D, K)
+                allReconstructedPoints.append(points)
+                allErrors.append(error)
+
 
     # disp3d.paint(track)
 
@@ -87,6 +91,7 @@ if __name__ == "__main__":
     for i in range(0, len(allReconstructedPoints), 3):
         if (i + 2) < len(allReconstructedPoints):
             reconstruction.append(allReconstructedPoints[i+2])
+            errors.append(allErrors[i+2])
             
     # save cone reconstruction
     # reset reconstruction file
@@ -104,6 +109,14 @@ if __name__ == "__main__":
     with open(os.path.join(path, 'car_reconstruction.p3d'), 'a') as f:
         for pts in reconstruction:
             print(f'{pts[-1][0]};{pts[-1][1]};{pts[-1][2]}', file=f)
+    
+    # save optimization errors
+    # reset reconstruction file
+    open(os.path.join(path, 'optimization_errors.txt'), 'w').close()
+    # save reconstructed points in file
+    with open(os.path.join(path, 'optimization_errors.txt'), 'a') as f:
+        for error in errors:
+            print(f'{error}', file=f)
 
     input('Press enter to exit...')
 
