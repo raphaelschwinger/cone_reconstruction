@@ -109,7 +109,11 @@ for result_path in results:
             result_path, 'car_transformation.p3d'), delimiter=';')
 
         # calculate MSE
-        mse = np.mean(np.square(points_3D - blender_car_points_3D))
+        # print distance to blender_car_points_3D
+        print(np.linalg.norm(
+            points_3D - blender_car_points_3D))
+        mse = np.mean(np.square(np.linalg.norm(
+            points_3D - blender_car_points_3D, ord=2, axis=1)))
         # dir_name
         dir_name = os.path.basename(result_path)
         print(dir_name, mse)
@@ -137,7 +141,8 @@ for result_path in results:
             point_3D += delta_points_3D
 
         # calculate MSE
-        mse = np.mean(np.square(points_3D - blender_car_points_3D))
+        mse = np.mean(np.square(np.linalg.norm(
+            points_3D - blender_car_points_3D, ord=2, axis=1)))
         # dir_name
         dir_name = os.path.basename(result_path)
         print(dir_name, mse)
@@ -147,9 +152,35 @@ for result_path in results:
         plt.ylabel("Mean squared error", labelpad=15)
         plt.xticks([])
 
+# Display euclidean distance to blender_car_points_3D
+fig = plt.figure(5)
+i = 0
+for result_path in results:
+    # check if result is a directory
+    if os.path.isdir(result_path):
+        i += 1
+        points_3D = np.loadtxt(os.path.join(
+            result_path, 'car_transformation.p3d'), delimiter=';')
+
+        # normalize points in relation to first car position
+        # calculate delta to first car position
+        delta_points_3D = blender_car_points_3D[0] - points_3D[0]
+        for point_3D in points_3D:
+            point_3D += delta_points_3D
+
+        # calculate distances
+        distances = np.linalg.norm(
+            points_3D - blender_car_points_3D, ord=2, axis=1)
+        # dir_name
+        dir_name = os.path.basename(result_path)
+        plt.plot(distances, label=dir_name, color=color[i % 3])
+        plt.legend(loc='best')
+        plt.ylabel("euclidean distances", labelpad=15)
+        plt.xlabel("frame")
+
 
 # plot optimization error
-fig = plt.figure(5)
+fig = plt.figure(6)
 i = 0
 for result_path in results:
     # check if result is a directory
