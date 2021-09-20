@@ -10,9 +10,8 @@ class: invert
 <!-- _paginate: false -->
 
 # Master's Project: Deep Learning und Autonomous Racing
-By Raphael, 
- Rakib
-
+By Raphael, Rakib
+Supervisors : Lars, Claudius
 
 ---
 TODO :: Lots of images 
@@ -24,28 +23,28 @@ TODO :: Lots of images
 
 ---
 
-#  Project Overview:
+##  Project Overview:
 
 - About  "Rosyard" project. 
-- Race-Car Discription 
+- Race-Car discription 
 - Race-track discription
 - The SLAM algorithm
 
 ---
 
-# Introduction:
+## Introduction:
 
 -  To optimize the SLAM algorithm it needs an accurate ground truth of the track and the position of the car during a test race.
 - This task of ground truth generation is divided into two subtasks. 
   -  A ground truth of the race track has to be generated.  
   -  The position of the car has to be recorded during a race. 
--  The Goal of the project is to design an algorithm that calculates the corresponding ground truth of the Racecar
+-  The Goal of the project is to design an algorithm that calculates the corresponding ground truth of the racecar.
   
 ---
-- ### Possible methods
-  - **Image based Triangulation** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track. 	
-  - **UWB based Triangulation** : Using UWB to trigulate car's position.Similar technogoly of AirTag but we do not have enough techincal knowledge.
+- ### Possible methods	
+  - **UWB based Triangulation** : Using UWB to trigulate car's position. Similar technology of AirTag but we do not have enough techincal knowledge for implementation.
   - **LiDAR** : More accurate but expensive.
+  - **Image based Triangulation** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track. 
 
 
 ---
@@ -55,10 +54,11 @@ blender-car_animation/02-video0001-0080.avi
 
 ---
 
-# Reconstruction of the race-track using Blender :
+## Reconstruction of the race-track using Blender :
 
 -  **Blender** :
-   -  Scene construcution
+   -  Why Blender?
+   -  Scene Construction
       -  Camera Settings : Focal length 15 mm?
       -  Track length
       -  Cone size : 15 cm 
@@ -76,7 +76,7 @@ blender-car_animation/02-video0001-0080.avi
   
 
 ---
-# Tracking the racecar OpenCV:
+## Tracking the racecar with OpenCV:
 
 - **OpenCV Tracking Algorithm** :
     - KCF : Kernelized Correlation Filte is a novel tracking framework that utilizes properties of circulant matrix to enhance the processing speed. 
@@ -90,28 +90,27 @@ blender-car_animation/02-video0001-0080.avi
 - Each tracker algorithm has their own advantages and disadvantages, but for us CSRT worked the best. 
   
  - **Color Tracking** 
-   - Tracking the Racecar based on its color. i.e: Red color
-   - Video Demo of the tracking 
+   - Tracking the Racecar based on its color. i.e: Red Color.
 ---
-# Results:
-  - Video Demo of the tracking  
-  - Result/Output of the tracking   
-  - Comparison graph of different tracker
+## Results:
+  - Video Demo of all the tracking methods.  
+  - Result/Output of the tracking.   
+  - Comparison graph of different trackers.
 
 ---
 
-# Evaluation :
+## Evaluation :
 -  MSE Graph
 -  Optimization error and plotted Graph 
 
 ---
 
-# Project Limiations: 
+## Project Limiations: 
    - Using only Blender generated scene.
    - Accuracy and noise of the real world are not considered.
 ---
 
-# Conclusion :
+## Conclusion :
    -  **Future prospects** :  
       -  Implementing the algorithm on a real-word scenario.
-      -  To improve the tracking accuracy we can try better methods to track the car. i.e: Train a CNN model using images of the Racecar 
+      -  To improve the tracking accuracy we can try better methods. i.e: Train a CNN model using images of the Racecar 
