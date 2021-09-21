@@ -41,12 +41,12 @@ if __name__ == '__main__':
 
     # definig the range of red color
     # lower boundary RED color range values; Hue (0 - 10)
-    lower1 = np.array([0, 50, 1])
-    upper1 = np.array([10, 255, 255])
+    lower1 = np.array([0, 50, 30])
+    upper1 = np.array([5, 255, 255])
     
     # upper boundary RED color range values; Hue (160 - 180)
-    lower2 = np.array([160,50,1])
-    upper2 = np.array([179,255,255])
+    lower2 = np.array([180,50,30])
+    upper2 = np.array([180,255,255])
     
 
 
@@ -92,7 +92,7 @@ if __name__ == '__main__':
 
         for pic, contour in enumerate(contours):
             area = cv2.contourArea(contour)
-            if(area > 900):
+            if(area > 50):
                 x, y, w, h = cv2.boundingRect(contour)
                 # check if min/max values are set
                 if (min_x == -1):
@@ -119,7 +119,7 @@ if __name__ == '__main__':
         # save result
         with open(os.path.join(current_frame_path, cam_name + '.p2d'), 'a') as f:
             # use bottom of reactangle as center
-            print(f'{(min_x + max_x) / 2} {max_y}', file=f)
+            print(f'{(min_x + max_x) / 2} {(min_y + max_y) / 2}', file=f)
         cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
 
 
