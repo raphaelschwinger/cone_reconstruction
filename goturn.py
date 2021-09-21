@@ -97,7 +97,7 @@ if __name__ == '__main__' :
             #     print(f' ', file=f)
  
         # Display tracker type on frame
-        cv2.putText(frame, tracker_type + " Tracker", (100,20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50,170,50),2);
+        cv2.putText(frame,"  GoTURN Tracker", (100,20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50,170,50),2);
      
         # Display FPS on frame
         cv2.putText(frame, "FPS : " + str(int(fps)), (100,50), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (50,170,50), 2);
