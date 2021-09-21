@@ -5,6 +5,12 @@ import numpy as np
 color = ['blue', 'green', 'orange', 'purple', 'yellow']
 
 
+def smooth(y, box_pts):
+    box = np.ones(box_pts)/box_pts
+    y_smooth = np.convolve(y, box, mode='same')
+    return y_smooth
+
+
 plt.figure(1)
 
 # load results
@@ -193,6 +199,159 @@ for result_path in results:
         plt.legend(loc='best')
         plt.ylabel("optimization error", labelpad=15)
         plt.xlabel("frame")
+
+
+# smooth by optimization error
+plt.figure(7)
+i = 0
+for result_path in results:
+    # check if result is a directory
+    if os.path.isdir(result_path):
+        i += 1
+        # dir_name
+        dir_name = os.path.basename(result_path)
+        if (dir_name != 'CSRT-tracker'):
+            print(dir_name)
+            points_3D = np.loadtxt(os.path.join(
+                result_path, 'car_transformation.p3d'), delimiter=';')
+
+            # normalize points in relation to first car position
+            # calculate delta to first car position
+            delta_points_3D = blender_car_points_3D[0] - points_3D[0]
+            for point_3D in points_3D:
+                point_3D += delta_points_3D
+
+            error = np.loadtxt(os.path.join(
+                result_path, 'optimization_errors.txt'), delimiter=';')
+            # add optimization error to points
+            for j in range(points_3D.shape[0]):
+                points_3D[j, 2] += error[j]
+
+            # prune points with error > 50
+            for j in range(points_3D.shape[0]):
+                if points_3D[j, 2] > 100:
+                    points_3D[j, 0] = points_3D[j - 1, 0]
+                    points_3D[j, 1] = points_3D[j - 1, 1]
+
+            # strip last dimension of points to make 2D points
+            points_2D = points_3D[:, :2]
+
+            # plot points
+            plt.plot(points_2D[:, 0], points_2D[:, 1],
+                     label=dir_name, color=color[i % 4])
+            plt.legend(loc='best')
+
+# add "real position" to plot
+plt.plot(blender_car_points_3D[:, 0],
+         blender_car_points_3D[:, 1], label='real position'.format('r'))
+plt.plot(blender_cone_points_3D[:, 0], blender_cone_points_3D[:, 1], 'r^')
+# add reconstucted cone points to plot
+plt.plot(transformed_cone_points_2D[:, 0],
+         transformed_cone_points_2D[:, 1], 'y^')
+plt.ylabel("Y position", labelpad=15)
+plt.xlabel("X position", labelpad=15)
+
+# smooth lines
+plt.figure(8)
+i = 0
+for result_path in results:
+    # check if result is a directory
+    if os.path.isdir(result_path):
+        i += 1
+        # dir_name
+        dir_name = os.path.basename(result_path)
+        if (dir_name != 'CSRT-tracker'):
+            print(dir_name)
+            points_3D = np.loadtxt(os.path.join(
+                result_path, 'car_transformation.p3d'), delimiter=';')
+
+            # normalize points in relation to first car position
+            # calculate delta to first car position
+            delta_points_3D = blender_car_points_3D[0] - points_3D[0]
+            for point_3D in points_3D:
+                point_3D += delta_points_3D
+
+            error = np.loadtxt(os.path.join(
+                result_path, 'optimization_errors.txt'), delimiter=';')
+            # add optimization error to points
+            for j in range(points_3D.shape[0]):
+                points_3D[j, 2] += error[j]
+
+            # prune points with error > 50
+            for j in range(points_3D.shape[0]):
+                if points_3D[j, 2] > 100:
+                    points_3D[j, 0] = points_3D[j - 1, 0]
+                    points_3D[j, 1] = points_3D[j - 1, 1]
+
+            # smooth points
+            points_3D[:, 0] = smooth(points_3D[:, 0], 7)
+            points_3D[:, 1] = smooth(points_3D[:, 1], 7)
+
+            # strip last dimension of points to make 2D points
+            points_2D = points_3D[:, :2]
+
+            # plot points
+            plt.plot(points_2D[:, 0], points_2D[:, 1],
+                     label=dir_name, color=color[i % 4])
+            plt.legend(loc='best')
+
+# add "real position" to plot
+plt.plot(blender_car_points_3D[:, 0],
+         blender_car_points_3D[:, 1], label='real position'.format('r'))
+plt.plot(blender_cone_points_3D[:, 0], blender_cone_points_3D[:, 1], 'r^')
+# add reconstucted cone points to plot
+plt.plot(transformed_cone_points_2D[:, 0],
+         transformed_cone_points_2D[:, 1], 'y^')
+plt.ylabel("Y position", labelpad=15)
+plt.xlabel("X position", labelpad=15)
+
+# diplay mse plot
+fig = plt.figure(9)
+i = 0
+for result_path in results:
+    # check if result is a directory
+    if os.path.isdir(result_path):
+        i += 1
+        # dir_name
+        dir_name = os.path.basename(result_path)
+        if (dir_name != 'CSRT-tracker'):
+            print(dir_name)
+            points_3D = np.loadtxt(os.path.join(
+                result_path, 'car_transformation.p3d'), delimiter=';')
+
+            # normalize points in relation to first car position
+            # calculate delta to first car position
+            delta_points_3D = blender_car_points_3D[0] - points_3D[0]
+            for point_3D in points_3D:
+                point_3D += delta_points_3D
+
+            error = np.loadtxt(os.path.join(
+                result_path, 'optimization_errors.txt'), delimiter=';')
+            # add optimization error to points
+            for j in range(points_3D.shape[0]):
+                points_3D[j, 2] += error[j]
+
+            # prune points with error > 50
+            for j in range(points_3D.shape[0]):
+                if points_3D[j, 2] > 100:
+                    points_3D[j, 0] = points_3D[j - 1, 0]
+                    points_3D[j, 1] = points_3D[j - 1, 1]
+
+            # smooth points
+            points_3D[:, 0] = smooth(points_3D[:, 0], 7)
+            points_3D[:, 1] = smooth(points_3D[:, 1], 7)
+
+            # calculate MSE
+            mse = np.mean(np.square(np.linalg.norm(
+                points_3D - blender_car_points_3D, ord=2, axis=1)))
+
+            print(dir_name, mse)
+            plt.text(i + 0.45, mse + 0.01,
+                     str(round(mse, 2)), fontweight='bold')
+            plt.bar(i, mse, 1, label=dir_name, color=color[i % 4])
+            plt.legend(loc='best')
+            plt.ylabel("Mean squared error", labelpad=15)
+            plt.xticks([])
 
 
 plt.show(block=False)
