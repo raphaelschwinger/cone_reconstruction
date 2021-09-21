@@ -49,9 +49,12 @@ if __name__ == '__main__':
     upper2 = np.array([180,255,255])
     
 
+    open(os.path.join(path, 'tracking-result-'+  cam_name + '.p2d'), 'w').close()
 
     frame_count = 0
 
+    result_x = 100
+    result_y = 100
     while True:
         # Read a new frame
         ok, frame = video.read()
@@ -112,6 +115,10 @@ if __name__ == '__main__':
                     max_x = x + w
                 if (y + h > max_y):
                     max_y = y + h
+                if (min_x != -1) and (min_y != -1) and (max_x != -1) and (max_y != -1):
+                    result_x = (min_x + max_x) / 2
+                    result_y = max_y
+
         # draw rectangle
         img = cv2.rectangle(frame, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
         cv2.putText(frame, "RED color", (x, y),
@@ -119,8 +126,12 @@ if __name__ == '__main__':
         # save result
         with open(os.path.join(current_frame_path, cam_name + '.p2d'), 'a') as f:
             # use bottom of reactangle as center
-            print(f'{(min_x + max_x) / 2} {(min_y + max_y) / 2}', file=f)
+            print(f'{result_x} {result_y}', file=f)
+        with open(os.path.join(path, 'tracking-result-'+  cam_name + '.p2d'), 'a') as f:
+            print(f'{result_x}; {result_y}', file=f)
         cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
+
+
 
 
         # Display result
