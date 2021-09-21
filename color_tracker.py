@@ -23,15 +23,6 @@ if __name__ == '__main__':
 
     frame_dir_path = os.path.join(path, 'frames')
 
-    tracker_types = ['KCF', 'CSRT']
-    tracker_type = tracker_types[1]
-
-#  two trackers that can be tested, CSRT seems to perform better
-    if tracker_type == 'KCF':
-        tracker = cv2.TrackerKCF_create()
-    elif tracker_type == "CSRT":
-        tracker = cv2.TrackerCSRT_create()
-
     # Read video
     video_path = os.path.join(path, cam_name + '-video0001-0200.avi')
     video = cv2.VideoCapture(video_path)
@@ -50,11 +41,11 @@ if __name__ == '__main__':
 
     # definig the range of red color
     # lower boundary RED color range values; Hue (0 - 10)
-    lower1 = np.array([0, 100, 20])
+    lower1 = np.array([0, 50, 1])
     upper1 = np.array([10, 255, 255])
     
     # upper boundary RED color range values; Hue (160 - 180)
-    lower2 = np.array([160,100,20])
+    lower2 = np.array([160,50,1])
     upper2 = np.array([179,255,255])
     
 
@@ -101,7 +92,7 @@ if __name__ == '__main__':
 
         for pic, contour in enumerate(contours):
             area = cv2.contourArea(contour)
-            if(area > 300):
+            if(area > 900):
                 x, y, w, h = cv2.boundingRect(contour)
                 # check if min/max values are set
                 if (min_x == -1):

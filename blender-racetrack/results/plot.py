@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 
-color = ['blue', 'green', 'orange']
+color = ['blue', 'green', 'orange', 'purple', 'yellow']
 
 
 plt.figure(1)
@@ -44,12 +44,12 @@ for result_path in results:
 
         # plot points
         plt.plot(points_2D[:, 0], points_2D[:, 1],
-                 label=dir_name, color=color[i % 3])
+                 label=dir_name, color=color[i % 4])
         plt.legend(loc='best')
 
 # add "real position" to plot
 plt.plot(blender_car_points_3D[:, 0],
-         blender_car_points_3D[:, 1], label='real position'.format('r'))
+         blender_car_points_3D[:, 1], label='real position'.format('red'))
 plt.plot(blender_cone_points_3D[:, 0], blender_cone_points_3D[:, 1], 'r^')
 # add reconstucted cone points to plot
 plt.plot(transformed_cone_points_2D[:, 0],
@@ -84,7 +84,7 @@ for result_path in results:
 
         # plot points
         plt.plot(points_2D[:, 0], points_2D[:, 1],
-                 label=dir_name, color=color[i % 3])
+                 label=dir_name, color=color[i % 4])
         plt.legend(loc='best')
 
 # add "real position" to plot
@@ -118,7 +118,7 @@ for result_path in results:
         dir_name = os.path.basename(result_path)
         print(dir_name, mse)
         plt.text(i + 0.45, mse + 1, str(round(mse, 2)), fontweight='bold')
-        plt.bar(i, mse, 1, label=dir_name, color=color[i % 3])
+        plt.bar(i, mse, 1, label=dir_name, color=color[i % 4])
         plt.legend(loc='best')
         plt.ylabel("Mean squared error", labelpad=15)
         plt.xticks([])
@@ -147,7 +147,7 @@ for result_path in results:
         dir_name = os.path.basename(result_path)
         print(dir_name, mse)
         plt.text(i + 0.45, mse + 0.01, str(round(mse, 2)), fontweight='bold')
-        plt.bar(i, mse, 1, label=dir_name, color=color[i % 3])
+        plt.bar(i, mse, 1, label=dir_name, color=color[i % 4])
         plt.legend(loc='best')
         plt.ylabel("Mean squared error", labelpad=15)
         plt.xticks([])
@@ -173,7 +173,7 @@ for result_path in results:
             points_3D - blender_car_points_3D, ord=2, axis=1)
         # dir_name
         dir_name = os.path.basename(result_path)
-        plt.plot(distances, label=dir_name, color=color[i % 3])
+        plt.plot(distances, label=dir_name, color=color[i % 4])
         plt.legend(loc='best')
         plt.ylabel("euclidean distances", labelpad=15)
         plt.xlabel("frame")
@@ -189,10 +189,13 @@ for result_path in results:
         error = np.loadtxt(os.path.join(
             result_path, 'optimization_errors.txt'), delimiter=';')
         dir_name = os.path.basename(result_path)
-        plt.plot(error, label=dir_name, color=color[i % 3])
+        plt.plot(error, label=dir_name, color=color[i % 4])
         plt.legend(loc='best')
         plt.ylabel("optimization error", labelpad=15)
         plt.xlabel("frame")
 
 
-plt.show()
+plt.show(block=False)
+plt.pause(0.001)  # Pause for interval seconds.
+input("hit[enter] to end.")
+plt.close('all')  # all open plots are correctly closed after each run
