@@ -142,9 +142,28 @@ R = cv2.Rodrigues(rvecs)
 
 ---
 
+![width:900px](simple-racetrack.gif)
+
+---
+
+![width:900px](simple_racetrack_reonstruction.gif)
+
+---
+
+![width:900px](race-track.gif)
+
+---
+### 3D Reconstructed Racetrack 
+
+![width:600px height:400px](reconstructed_racetrack.png)
+
+---
+
+
 ## Tracking the racecar with OpenCV:
 
 ![width:800px height:400px](opencv_object_tracking.gif)
+
 
 ---
 
@@ -333,6 +352,5 @@ cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
 
 ---
 
-## References:
+# Thank You
 
-- https://szeliski.org/Book/
