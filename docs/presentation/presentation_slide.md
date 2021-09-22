@@ -8,7 +8,7 @@ class: lead
 
 <!-- _paginate: false -->
 
-# Master's Project: Deep Learning und Autonomous Racing
+# Master's Project: Deep Learning and Autonomous Racing
 
 <!-- TODO: add fullnames -->
 
@@ -28,33 +28,46 @@ Claudius Anton Zelenka
 
 ## Project Overview:
 
-- About "Rosyard" project
-- Race-Car discription
-- Race-track discription
-- The SLAM algorithm
+- "Rosyard" project:
+   - International design competition for Formula Student.
+   - The goal of (Raceyard) project is to implement a self-driving car for Formula Student  
+- (Rosyard) Race-Car discription:
+  - Weight: 185 k
+  - Top speed: 130 km / h
+- Race-track discription:
+  -  Length: 500m (Contains straights, hairpins, multiple turns)
+  -  Width:  5m 
+  -  Cone length: 15cm 
+
+---
+
+- **The SLAM algorithm**
+  -  Rosyard uses a SLAM algorithm to construct a map of the racing environment while simultaneously keeping track of a car's location within it.
+  -  Using SLAM facilitates detection and association of landmarks/cones. 
 
 ---
 
 ### Introduction:
 
-- To optimize the SLAM algorithm it needs an accurate ground truth of the track and the position of the car during a test race.
+- We have to optimize the SLAM algorithm. 
+  - The algorithm needs an accurate ground truth of the track and the car's position during a test race.
 - This task of ground truth generation is divided into two subtasks.
-  - A ground truth of the race track has to be generated.
-  - The position of the car while racing has to be aquired.
-- The Goal of the project is to design an algorithm that calculates the corresponding ground truth of the racecar.
+  - A ground truth of the cones has to be generated.
+  - The position of the car while racing.
+- The Goal of our project is to design an algorithm that calculates the corresponding ground truth of the racecar.
 
 ---
 
 ### Possible methods
 
-- **UWB based Triangulation** : Using UWB to trigulate car's position. Similar technology of AirTag but we do not have enough techincal knowledge for implementation.
 - **LiDAR** : More accurate but expensive.
-- **GPS** : High accuracy GPS is expensive but already commercially available.
-- **Image based Triangulation** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track.
+- **GPS** : High accuracy GPS is expensive and commercially available.
+- **UWB based Triangulation** : Using UWB to trigulate car's position. Similar technology of AirTag but we do not have enough techincal knowledge for implementation.
+- **Image based 3D Reconstruction** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track.
 
 ---
 
-### 3D Reconstruction
+### 3D Reconstruction:
 
 - Structure from Motion: SLAM
   - simultaneous recover 3D structure and poses of cameras
@@ -74,8 +87,9 @@ Claudius Anton Zelenka
   E = cv2.findEssentialMat(points_2D_1, points_2D_2, cameraMatrix )
   R, t = cv2.recoverPose(E, points_2D_1, points2D_2, cameraMatrix)
 ```
+---
 
-![width:300px](ComputerVision-682.png)
+![width:800px](ComputerVision-682.png)
 
 ---
 
@@ -106,7 +120,7 @@ R = cv2.Rodrigues(rvecs)
 
 ---
 
-## Affine transformation
+## Affine transformation:
 
 ```python
 -0.778266302285012 0.2502844001475607 2.6402778721299835
@@ -137,25 +151,38 @@ R = cv2.Rodrigues(rvecs)
   - Why Blender?
   - Scene Construction
     - Camera Settings : Focal length 15 mm
+    - Camera height : 1.5 m
     - 4k resolution
-  - Getting 2D cone and race-car's position point using scripts
+  
+---
+
+ Getting 2D cone and race-car's position point using scripts
+
+```
+for cone in coneCollection.objects:
+        # get 3d coordinates of cone
+        location = cone.location.copy()
+        # location is the bottom of a cone and not the tip, the cone is 25cm high
+        location[2] = cone.location[2]
+        co_2d = bpy_extras.object_utils.world_to_camera_view(scene, camera, location)
+```
 
 ---
 
-![width:900px](simple-racetrack.gif)
+![width:1200px](simple-racetrack.gif)
 
 ---
-
+### Simple 3D Reconstruction:
 ![width:900px](simple_racetrack_reonstruction.gif)
 
 ---
-
-![width:900px](race-track.gif)
+### Racetrack:
+![width:1200px](race-track.gif)
 
 ---
-### 3D Reconstructed Racetrack 
+### 3D Reconstructed Racetrack: 
 
-![width:600px height:400px](reconstructed_racetrack.png)
+![width:1000px height:600px](reconstructed_racetrack.png)
 
 ---
 
@@ -171,21 +198,24 @@ R = cv2.Rodrigues(rvecs)
 <!-- TODO: add code, screenrecording -->
 
 - **OpenCV Tracking Algorithm** :
-  - **KCF** : Kernelized Correlation Filte is a novel tracking framework and one of the recent finding which has shown good results.
-  - Based on the idea of traditional correlational filter, it uses kernel trick and circulant matrices to significantly improve the computation speed.
+  - **KCF** : 
+    - Kernelized Correlation Filter is a novel tracking framework 
+    - One of the recent finding which has shown good results.
+    - Based on the idea of traditional correlational filter.
+    - It uses kernel trick and circulant matrices to significantly improve the computation speed.
 
 ---
 
-- **CSRT** : Channel and Spatial Reliability Tracking is a constrained filter learning with arbitrary spatial reliability map.
-- CSRT utilizes spatial reliability map that adjusts the filter support to the part of the object suitable for tracking.
+- **CSRT** : 
+    - Channel and Spatial Reliability Tracking is a constrained filter learning with arbitrary spatial reliability map.
+    - CSRT utilizes spatial reliability map. 
+    - Adjusts the filter support to the part of the object suitable for tracking.
 
-- GOTRUN: ??
+- **GOTRUN**: 
+  - Generic Object Tracking Using Regression Networks.
+  - A Deep Learning based tracking algorithm.
+  - Did not perform well.
 
----
-
-- Each tracker algorithm has their own advantages and disadvantages, but for us CSRT worked the best.
-
-  <!-- TODO: add code, screenrecording -->
 
 ---
 
@@ -219,7 +249,7 @@ with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
 ---
 
 - **Color Tracking**
-  - Tracking the Racecar based on a color. i.e: Red Colored Cylinder.
+  - Tracking the Racecar based on a color. i.e: Red Car, Red Colored Cylinder.
 
 ```
 
@@ -236,29 +266,7 @@ with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
 
 ---
 
-```
-
-# draw rectangle
-img = cv2.rectangle(frame, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
-cv2.putText(frame, "RED color", (x, y),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255))
-```
-
-- combine all filter matches to one rectangle
-
-- use bottom of reactangle as center
-
-```
-# save result
-with open(os.path.join(current_frame_path, cam_name + '.p2d'), 'a') as f:
-with open(os.path.join(path, 'tracking-result-'+  cam_name + '.p2d'), 'a') as f:
-
-cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
-```
-
----
-
-### Video Demo of all the tracking methods.
+### Video Demo of the tracking.
 
 ---
 
@@ -330,10 +338,10 @@ cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
 
 ## Evaluation :
 
-- "perfect" 2D input points accuracy in $~10cm$ possible
-- 3D reconstruction highly dependent on valid 2D input points
-- Slight noise in input date results in high error
-- Point of tracking is important
+- "Perfect" 2D input points accuracy in $~10cm$ possible.
+- 3D reconstruction highly dependent on valid 2D input points.
+- Slight noise in input date results in high error.
+- Point of tracking is important.
 
 ---
 
@@ -348,7 +356,7 @@ cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
 
 - **Future prospects** :
   - Implementing the algorithm on a real-word scenario.
-  - To improve the tracking accuracy we can try better methods. i.e: Train a CNN model using images of the Racecar
+  - To improve the tracking accuracy we can try better methods. i.e: Train a CNN model using images of the Racecar.
 
 ---
 
