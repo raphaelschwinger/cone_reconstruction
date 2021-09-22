@@ -117,7 +117,7 @@ if __name__ == '__main__':
                     max_y = y + h
                 if (min_x != -1) and (min_y != -1) and (max_x != -1) and (max_y != -1):
                     result_x = (min_x + max_x) / 2
-                    result_y = max_y
+                    result_y = max_y + 1 * (max_y - min_y)
 
         # draw rectangle
         img = cv2.rectangle(frame, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
