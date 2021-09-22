@@ -13,19 +13,20 @@ class: invert
 
 <!-- TODO: add fullnames -->
 
-By Raphael, Rakib
-Supervisors : Lars, Claudius
+By 
+Raphael Schwinger, Rakibuzzaman Mahmud
+Supervisors : Lars Schmarje, 
+Claudius Anton Zelenka
 
 ---
 
-TODO :: Lots of images
-![width:500px height:500px](race_car2.jpeg) <!-- Setting both lengths -->
+<!-- TODO :: Lots of images -->
+![bg](race_car2.jpeg) 
+![bg](race_car.jpeg) 
+
 
 ---
 
-![width:500px height:500px](race_car.jpeg) <!-- Setting both lengths -->
-
----
 
 ## Project Overview:
 
@@ -36,7 +37,7 @@ TODO :: Lots of images
 
 ---
 
-## Introduction:
+### Introduction:
 
 - To optimize the SLAM algorithm it needs an accurate ground truth of the track and the position of the car during a test race.
 - This task of ground truth generation is divided into two subtasks.
@@ -49,7 +50,7 @@ TODO :: Lots of images
 - ### Possible methods
   - **UWB based Triangulation** : Using UWB to trigulate car's position. Similar technology of AirTag but we do not have enough techincal knowledge for implementation.
   - **LiDAR** : More accurate but expensive.
-  <!-- ADD GPS -> already commercialy available, so no intrest for us, maybe just mention in the talk -->
+  - **GPS** : High Accuracy GPS is expensive and not always commercially available.
   - **Image based Triangulation** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track.
 
 ---
@@ -58,20 +59,6 @@ TODO :: Lots of images
 blender-car_animation/02-video0001-0080.avi
 
 ---
-
-## Reconstruction of the race-track using Blender :
-
-- **Blender** :
-  - Why Blender?
-  - Scene Construction
-    - Camera Settings : Focal length 15 mm
-    - 4k resolution
-    - Track length
-    <!-- - not relevant, better we show the track in a demo Cone size : 15 cm  -->
-  - Getting 2D cone and race-car's position point using scripts
-
----
-
 ### 3D Reconstruction
 
 - 3D Cone Reconstruction
@@ -80,8 +67,28 @@ blender-car_animation/02-video0001-0080.avi
 - 3D Racecar reconstruction
   - How we got the 2D position of the Rececar from a video.
   - Screenshot/Demo of the Reconstruction
-  <!-- TODO: make this an extra slide and add code -->
-- **Affine transformation**
+
+---
+#### Reconstructed Cones and racecar
+
+
+![width:1000px height:600px](reconstructed_racetrack.png)
+
+---
+## Reconstruction of the race-track using Blender :
+
+- **Blender** :
+  - Why Blender?
+  - Scene Construction
+    - Camera Settings : Focal length 15 mm
+    - 4k resolution
+  - Getting 2D cone and race-car's position point using scripts
+
+
+
+---   
+
+## Affine transformation
 
 ---
 
