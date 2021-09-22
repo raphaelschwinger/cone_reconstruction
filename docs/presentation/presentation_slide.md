@@ -13,20 +13,19 @@ class: invert
 
 <!-- TODO: add fullnames -->
 
-By 
+By
 Raphael Schwinger, Rakibuzzaman Mahmud
-Supervisors : Lars Schmarje, 
+Supervisors : Lars Schmarje,
 Claudius Anton Zelenka
 
 ---
 
 <!-- TODO :: Lots of images -->
-![bg](race_car2.jpeg) 
-![bg](race_car.jpeg) 
 
+![bg](race_car2.jpeg)
+![bg](race_car.jpeg)
 
 ---
-
 
 ## Project Overview:
 
@@ -42,7 +41,7 @@ Claudius Anton Zelenka
 - To optimize the SLAM algorithm it needs an accurate ground truth of the track and the position of the car during a test race.
 - This task of ground truth generation is divided into two subtasks.
   - A ground truth of the race track has to be generated.
-  - The position of the car has to be recorded during a race.
+  - The position of the car while racing as to be aquired.
 - The Goal of the project is to design an algorithm that calculates the corresponding ground truth of the racecar.
 
 ---
@@ -50,31 +49,65 @@ Claudius Anton Zelenka
 - ### Possible methods
   - **UWB based Triangulation** : Using UWB to trigulate car's position. Similar technology of AirTag but we do not have enough techincal knowledge for implementation.
   - **LiDAR** : More accurate but expensive.
-  - **GPS** : High Accuracy GPS is expensive and not always commercially available.
+  - **GPS** : High Accuracy GPS is expensive but already commercially available.
   - **Image based Triangulation** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track.
 
 ---
 
-<video controls="controls" width="800" src="blender-car_animation/02-video0001-0080.avi"></video>
-blender-car_animation/02-video0001-0080.avi
-
----
 ### 3D Reconstruction
 
-- 3D Cone Reconstruction
-  - How we got the 2D positions of the cones.
-  - Screenshot/Demo of the Reconstruction
-- 3D Racecar reconstruction
-  - How we got the 2D position of the Rececar from a video.
-  - Screenshot/Demo of the Reconstruction
+- Structure from Motion: SLAM
+  - simultaneous recover 3D structure and poses of cameras
+- Input:
+  - Image coordinates of objects for each camera
+  - camera intrinsics (focal length, resolution, ...)
+  - "real" position of at least 4 objects
 
 ---
-#### Reconstructed Cones and racecar
 
+#### Overview:
 
-![width:1000px height:600px](reconstructed_racetrack.png)
+- first camera set to origin
+- pose of second camera can be reconstructed with essential matrix $E = [t]_x R$ [^1]
+
+```python
+  E = cv2.findEssentialMat(points_2D_1, points_2D_2, cameraMatrix )
+  R, t = cv2.recoverPose(E, points_2D_1, points2D_2, cameraMatrix)
+```
+
+[^1]: https://szeliski.org/Book/
+
+![width:300px](ComputerVision-682.png)
 
 ---
+
+#### Overview:
+
+- 3D points can then be triangulated
+
+```python
+   points3D = cv2.triangulatePoints(P1, P2, points1, points2)
+```
+
+- for consecutive camera images $R§ and $t$ can be recovered with Random sample consensus RANSAC algorithm
+- Rodrigues can transform rotation vector in Rotation matrix
+
+```python
+rvecs, t = cv2.solvePnPRansac(points_3D, points_2D, cameraMatrix)
+R= cv2.Rodrigues(rvecs)
+```
+
+---
+
+#### Overview:
+
+- further optimization can be achieved by using bundle adjustment
+- we included `g2o` library for this purpose
+
+![width:600px height:400px](reconstructed_racetrack.png)
+
+---
+
 ## Reconstruction of the race-track using Blender :
 
 - **Blender** :
@@ -84,9 +117,7 @@ blender-car_animation/02-video0001-0080.avi
     - 4k resolution
   - Getting 2D cone and race-car's position point using scripts
 
-
-
----   
+---
 
 ## Affine transformation
 
@@ -143,3 +174,9 @@ blender-car_animation/02-video0001-0080.avi
 - **Future prospects** :
   - Implementing the algorithm on a real-word scenario.
   - To improve the tracking accuracy we can try better methods. i.e: Train a CNN model using images of the Racecar
+
+---
+
+## References:
+
+- https://szeliski.org/Book/
