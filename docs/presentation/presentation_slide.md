@@ -29,7 +29,7 @@ Claudius Anton Zelenka
 
 ## Project Overview:
 
-- About "Rosyard" project
+- About "Rosyard" project 
 - Race-Car discription
 - Race-track discription
 - The SLAM algorithm
@@ -124,22 +124,93 @@ R= cv2.Rodrigues(rvecs)
 ---
 
 ## Tracking the racecar with OpenCV:
+![width:800px height:400px](opencv_object_tracking.gif)
 
+---
 <!-- TODO: we need to give / research more detail here -->
 <!-- TODO: add code, screenrecording -->
 
 - **OpenCV Tracking Algorithm** :
-  - KCF : Kernelized Correlation Filte is a novel tracking framework that utilizes properties of circulant matrix to enhance the processing speed.
-  - CSRT : Channel and Spatial Reliability Tracking https://github.com/alanlukezic/csr-dcf
+  - **KCF** : Kernelized Correlation Filte is a novel tracking framework and one of the recent finding which has shown good results. 
+  - Based on the idea of traditional correlational filter, it uses kernel trick and circulant matrices to significantly improve the computation speed.
 
+---
+
+  - **CSRT** : Channel and Spatial Reliability Tracking is a constrained filter learning with arbitrary spatial reliability map. 
+  - CSRT utilizes spatial reliability map that adjusts the filter support to the part of the object suitable for tracking. 
+ 
+  - GOTRUN: ?? 
 ---
 
 - Each tracker algorithm has their own advantages and disadvantages, but for us CSRT worked the best.
 
   <!-- TODO: add code, screenrecording -->
 
+----
+``` 
+ tracker_types = ['KCF', 'CSRT']
+    tracker_type = tracker_types[1]
+ 
+    if tracker_type == 'KCF':
+        tracker = cv2.TrackerKCF_create()
+    elif tracker_type == "CSRT":
+        tracker = cv2.TrackerCSRT_create()
+```
+Output of the bounding Box Area:
+
+```
+p1 = (int(bbox[0]), int(bbox[1]))
+p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
+            print(p1,p2)
+```
+
+---
+##### Saving the points for each frame:
+
+```
+with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
+                print(f'{(p1[0] + p2[0]) / 2 } {(p1[1] + p2[1]) / 2 }', file=f)
+```
+
+----
 - **Color Tracking**
-  - Tracking the Racecar based on its color. i.e: Red Color.
+  - Tracking the Racecar based on a color. i.e: Red Colored Cylinder.
+
+```
+
+    # definig the range of red color
+    # lower boundary RED color range values; Hue (0 - 10)
+    lower1 = np.array([0, 50, 30])
+    upper1 = np.array([5, 255, 255])
+    
+    # upper boundary RED color range values; Hue (160 - 180)
+    lower2 = np.array([180,50,30])
+    upper2 = np.array([180,255,255])
+    
+```
+---
+
+```
+
+# draw rectangle
+img = cv2.rectangle(frame, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
+cv2.putText(frame, "RED color", (x, y),
+            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255))
+```
+
+use bottom of reactangle as center
+
+```
+# save result
+with open(os.path.join(current_frame_path, cam_name + '.p2d'), 'a') as f:
+with open(os.path.join(path, 'tracking-result-'+  cam_name + '.p2d'), 'a') as f:
+    
+cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
+```
+---
+
+### Video Demo of all the tracking methods.
+
 
 ---
 
@@ -147,7 +218,6 @@ R= cv2.Rodrigues(rvecs)
 
 <!-- TODO: add them to the slides and also add key outcomes, do that after we finished our results -->
 
-- Video Demo of all the tracking methods.
 - Result/Output of the tracking.
 - Comparison graph of different trackers.
 
