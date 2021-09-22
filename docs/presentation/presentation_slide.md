@@ -2,9 +2,8 @@
 marp: true
 title: Project
 paginate: true
-theme: uncover
-# backgroundColor: skyblue
-class: invert
+theme: gaia
+class: lead
 ---
 
 <!-- _paginate: false -->
@@ -247,8 +246,63 @@ cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
 
 <!-- TODO: add them to the slides and also add key outcomes, do that after we finished our results -->
 
-- Result/Output of the tracking.
-- Comparison graph of different trackers.
+![width:900px](transformed.png)
+
+---
+
+#### Move track to starting point
+
+![width:900px](normalized.png)
+
+---
+
+#### Mean squared error
+
+![width:900px](mse.png)
+
+---
+
+#### Mean squared error
+
+![width:900px](mse2.png)
+
+---
+
+#### Distance / Error
+
+![height:300px](distance.png)
+![height:300px](error.png)
+
+---
+
+#### Prune points with high error
+
+![height:300px](prune_distance.png)
+![height:300px](prune_error.png)
+
+---
+
+#### Pruned plot
+
+![width:900px](prune_plot.png)
+
+---
+
+#### Pruned Mean squared error
+
+![width:900px](prune_mse.png)
+
+---
+
+#### Convolution filter
+
+![width:900px](smoothend_plot.png)
+
+---
+
+#### Mean squared error
+
+![width:900px](smoothend_mse.png)
 
 ---
 
@@ -256,8 +310,10 @@ cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
 
 ## Evaluation :
 
-- MSE Graph
-- Optimization error and plotted Graph
+- "perfect" 2D input points accuracy in $~10cm$ possible
+- 3D reconstruction highly dependent on valid 2D input points
+- Slight noise in input date results in a higher error
+- Point of tracking is important
 
 ---
 
