@@ -45,11 +45,12 @@ Claudius Anton Zelenka
 
 ---
 
-- ### Possible methods
-  - **UWB based Triangulation** : Using UWB to trigulate car's position. Similar technology of AirTag but we do not have enough techincal knowledge for implementation.
-  - **LiDAR** : More accurate but expensive.
-  - **GPS** : High accuracy GPS is expensive but already commercially available.
-  - **Image based Triangulation** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track.
+### Possible methods
+
+- **UWB based Triangulation** : Using UWB to trigulate car's position. Similar technology of AirTag but we do not have enough techincal knowledge for implementation.
+- **LiDAR** : More accurate but expensive.
+- **GPS** : High accuracy GPS is expensive but already commercially available.
+- **Image based Triangulation** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track.
 
 ---
 
@@ -83,7 +84,7 @@ Claudius Anton Zelenka
 - 3D points can then be triangulated
 
 ```python
-   points3D = cv2.triangulatePoints(P1, P2, points1, points2)
+   points3D = cv2.triangulatePoints(pose_1, pose_2, points1, points2)
 ```
 
 - for consecutive camera images $R$ and $t$ can be recovered with Random sample consensus RANSAC algorithm
@@ -312,7 +313,7 @@ cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
 
 - "perfect" 2D input points accuracy in $~10cm$ possible
 - 3D reconstruction highly dependent on valid 2D input points
-- Slight noise in input date results in a higher error
+- Slight noise in input date results in high error
 - Point of tracking is important
 
 ---
