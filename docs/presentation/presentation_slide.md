@@ -200,15 +200,15 @@ for cone in coneCollection.objects:
 - **OpenCV Tracking Algorithm** :
   - **KCF** : 
     - Kernelized Correlation Filter is a novel tracking framework 
-    - One of the recent finding which has shown good results.
+    - One of the recent findings which has shown good results.
     - Based on the idea of traditional correlational filter.
-    - It uses kernel trick and circulant matrices to significantly improve the computation speed.
+    - It uses kernel trick and circulant matrices to improve the computation speed significantly.
 
 ---
 
 - **CSRT** : 
-    - Channel and Spatial Reliability Tracking is a constrained filter learning with arbitrary spatial reliability map.
-    - CSRT utilizes spatial reliability map. 
+    - Channel and Spatial Reliability Tracking is a constrained filter learning with an arbitrary spatial reliability map.
+    - CSRT utilizes a spatial reliability map. 
     - Adjusts the filter support to the part of the object suitable for tracking.
 
 - **GOTRUN**: 
@@ -249,7 +249,7 @@ with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
 ---
 
 - **Color Tracking**
-  - Tracking the Racecar based on a color. i.e: Red Car, Red Colored Cylinder.
+  - Tracking the Racecar based on color. i.e: Red Car, Red Colored Cylinder.
 
 ```
 
@@ -339,13 +339,13 @@ with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
 ## Evaluation :
 
 - "Perfect" 2D input points accuracy in $~10cm$ possible.
-- 3D reconstruction highly dependent on valid 2D input points.
-- Slight noise in input date results in high error.
+- 3D reconstruction is highly dependent on valid 2D input points.
+- Slight noise in input date results in a high error.
 - Point of tracking is important.
 
 ---
 
-## Project Limiations:
+## Project Limitations:
 
 - Using only Blender generated scene.
 - Accuracy and noise of the real world are not considered.
@@ -355,7 +355,7 @@ with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
 ## Conclusion :
 
 - **Future prospects** :
-  - Implementing the algorithm on a real-word scenario.
+  - Implementing the algorithm in a real-world scenario.
   - To improve the tracking accuracy we can try better methods. i.e: Train a CNN model using images of the Racecar.
 
 ---
