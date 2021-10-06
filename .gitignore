@@ -1,2 +1,6 @@
+get-pip.py
 */__pycache__
 .DS_Store
+*.avi
+goturn.caffemodel
+goturn.prototxt
