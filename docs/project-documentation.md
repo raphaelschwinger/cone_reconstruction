@@ -11,6 +11,10 @@ Claudius Anton Zelenka*
 
 ## Project Overview
 
+<!-- TODO:
+  * differ from previous group text -> do not copy text
+ -->
+
 
 - The master project "Ground Truth Generation"  is a part of the "Rosyard" project. 
 
@@ -22,6 +26,21 @@ Claudius Anton Zelenka*
 - A race track of Rosyard usually roughly covers 50 x 150 meters and is marked by two rows of cones placed parallel to each other. The cones are placed at intervals of 5 meters lengthwise to the direction of travel, the width of the track is about 3 meters, and a cone has a height of 32 cm. 
 
 - In order to define the ground truth of the race track, it is therefore sufficient to determine the positions of these cones. We will use  3D scene reconstruction using images/videos of the race track. 
+
+
+TODO:
+- [ ] introduce Raceyard project
+- [ ] introduce problem, why does car needs to be tracked
+- [ ] discussion on what methods could be used
+- [ ] what did the premilary group
+
+---
+We have to optimize the SLAM algorithm. 
+  - The algorithm needs an accurate ground truth of the track and the car's position during a test race.
+- This task of ground truth generation is divided into two subtasks.
+  - A ground truth of the cones has to be generated.
+  - The position of the car while racing.
+- The Goal of our project is to design an algorithm that calculates the corresponding ground truth of the racecar.
 
 ---
 
@@ -38,45 +57,29 @@ Claudius Anton Zelenka*
   -  Cone length: 15cm 
 
 
+<!-- TODO: 
+  * add this to the "Overview Section"
+-->
 ### The SLAM algorithm
   -  Rosyard uses a SLAM algorithm to construct a map of the racing environment while simultaneously keeping track of a car's location within it.
   -  Using SLAM facilitates detection and association of landmarks/cones. 
 
 
-## Introduction
-
-TODO:
-- [ ] introduce Raceyard project
-- [ ] introduce problem, why does car needs to be tracked
-- [ ] discussion on what methods could be used
-- [ ] what did the premilary group
-
----
-We have to optimize the SLAM algorithm. 
-  - The algorithm needs an accurate ground truth of the track and the car's position during a test race.
-- This task of ground truth generation is divided into two subtasks.
-  - A ground truth of the cones has to be generated.
-  - The position of the car while racing.
-- The Goal of our project is to design an algorithm that calculates the corresponding ground truth of the racecar.
 
 
+
+<!-- TODO: 
+  * keep this short, max 1 page
+-->
 ### Possible methods
 
 - **LiDAR** : More accurate but expensive.
 - **GPS** : High accuracy GPS is expensive and commercially available.
-- **UWB based Triangulation** : Using UWB to trigulate car's position. Similar technology of AirTag but we do not have enough techincal knowledge for implementation.
+- **UWB based Triangulation** : Using UWB to triangulate car's position. Similar technology of AirTag but we do not have enough technical knowledge for implementation.
 - **Image based 3D Reconstruction** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track.
 
-# Reconstruction of the racetrack
 
-TODO:
-- [ ] Structure from motion
-- [ ] Blender, why?
-- [ ] transforming output to "real world" with affine transformation
-
----
-
-### 3D Reconstruction:
+### 3D Scene Reconstruction:
 
 - Structure from Motion: SLAM
   - simultaneous recover 3D structure and poses of cameras
@@ -118,7 +121,7 @@ R = cv2.Rodrigues(rvecs)
 ![width:600px height:400px](presentation/reconstructed_racetrack.png)
 
 
-## Affine transformation:
+### Affine transformation:
 
 ```python
 -0.778266302285012 0.2502844001475607 2.6402778721299835
@@ -141,7 +144,11 @@ R = cv2.Rodrigues(rvecs)
 -1.956 1.676 0.15
 ```
 
-# Reconstruction of the race-track using Blender :
+## Reconstruction of the race-track using Blender :
+
+TODO:
+- [ ] Blender, why?
+
 
 - **Blender** :
   - Why Blender?
@@ -308,31 +315,49 @@ with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
 - Slight noise in input date results in a high error.
 - Point of tracking is important.
 
-
-
-## Miscs
-
-
-* [ ] Dev Container: Our implementation depends on various software packages in different versions, that's why we worke on a Docker dev container. Descirption of how we used dev container to manage our virtualbox.
-
-* [ ] Pypangolin version error fix descriptio
-## Project Limitations:
+<!--  Add this to Evaluation ## Project Limitations: -->
 
 - Using only Blender generated scene.
 - Accuracy and noise of the real world are not considered.
 
-## README
+## Real World Guide
 
 TODO:
-* [ ] how to run
+- [ ] explain steps needed to try it in the real world
+- [ ] written text not bullet points
 
----
+1. Set at least 3 cameras which all cover the whole track
+2. Get calibration matrix of camera (depends on set focal length)
+2. Measure the locations of at least 4 Objects which are not on one plane
+3. Film racecar with static cameras (fast shutter speed -> no motion blur)
+4. Extract first frame from all cameras and annotate cone position (like previous groupe)
+5. Track car in videos to extract 2D position of car
+6. Perform 3D Scene Reconstruction run_reconstruction
+7. Transform result with affine transformation and the "correct" location of the 4 known objects
+
 
 ## Conclusion :
 
 - **Future prospects** :
   - Implementing the algorithm in a real-world scenario.
   - To improve the tracking accuracy we can try better methods. i.e: Train a CNN model using images of the Racecar.
+
+## README
+
+TODO:
+* [ ] how to run
+* [ ] roughly explain the different python scripts and name the imputs that need to be given
+
+## Miscs
+
+TODO:
+- [ ] add this to the README
+
+
+* [ ] Dev Container: Our implementation depends on various software packages in different versions, that's why we worke on a Docker dev container. Descirption of how we used dev container to manage our virtualbox.
+
+* [ ] Pypangolin version error fix descriptio
+
 
 
 
