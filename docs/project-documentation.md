@@ -9,6 +9,11 @@ By *Raphael Schwinger, Rakibuzzaman Mahmud*
 Supervisors : *Lars Schmarje,
 Claudius Anton Zelenka*
 
+<!-- Global TODOs:
+  * add figure labels
+  * add references
+ -->
+
 ## Project Overview
 
 <!-- TODO:
@@ -78,47 +83,37 @@ We have to optimize the SLAM algorithm.
 - **UWB based Triangulation** : Using UWB to triangulate car's position. Similar technology of AirTag but we do not have enough technical knowledge for implementation.
 - **Image based 3D Reconstruction** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track.
 
-
+---
 ### 3D Scene Reconstruction:
-
-- Structure from Motion: SLAM
-  - simultaneous recover 3D structure and poses of cameras
-- Input:
-  - image coordinates of objects for each camera
-  - camera intrinsics (focal length, resolution, ...)
-  - "real" position of at
+<img src="presentation/ComputerVision-682.png" width="200" />
 
 
-- first camera set to origin
-- pose of second camera can be reconstructed with essential matrix $E = [t]_x R$
+To reconstruct the position of both cones and the racecar we used a approach called `Structure from Motion`, thereby we were able to simultaneously recover the 3D structure of the racetrack and the poses of the used cameras. As an input only the image coordinates of the cones and the racecar and the camera intrinsics need to be provided. The later consists in particular of the set focal length and the set resolution.
+
+First the first camera is set as the origin. The task is now to acquire the pose and position of the consecutive cameras to be able to triangulate the position of the cones and racecar. For the the second camera this can be reconstructed with the `essential matrix` $E = [t]_x R$. OpenCV provides the following functions to do this.
 
 ```python
   E = cv2.findEssentialMat(points_2D_1, points_2D_2, cameraMatrix )
   R, t = cv2.recoverPose(E, points_2D_1, points2D_2, cameraMatrix)
 ```
 
-
-
-- 3D points can then be triangulated
+Afterwards the 3D coordinates of the cones and the racecar can be triangulated.
 
 ```python
    points3D = cv2.triangulatePoints(pose_1, pose_2, points1, points2)
 ```
 
-- for consecutive camera images $R$ and $t$ can be recovered with Random sample consensus RANSAC algorithm
-- Rodrigues algorithm can transform rotation vector $rvecs$ in Rotation matrix $R$
+For consecutive cameras $R$ and $t$ can be recovered with Random sample consensus `RANSAC` algorithm and the `Rodrigues algorithm`.
 
 ```python
 rvecs, t = cv2.solvePnPRansac(points_3D, points_2D, cameraMatrix)
 R = cv2.Rodrigues(rvecs)
 ```
 
+These informations is needed to further improve the 3D points with bundle adjustment. For this purpose we included the `g2o` library.
+This results in a list of 3D coordinates of the cones and the position of the racecar in the first frame of the video. To reconstruct the position of the racecar while in motion we repeated the steps for every frame of the video. Figure XX shows our initial visualisation of the result for the first frame.
 
-
-- further optimization can be achieved by using bundle adjustment
-- we included `g2o` library for this purpose
-
-![width:600px height:400px](presentation/reconstructed_racetrack.png)
+<img src="./presentation/reconstructed_racetrack.png" width="300" />
 
 
 ### Affine transformation:
