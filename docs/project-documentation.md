@@ -104,7 +104,7 @@ TODO:
 ### 3D Scene Reconstruction:
 <p>
     <img src="presentation/ComputerVision-682.png" alt>
-    <em>Fig: Camera matrix.</em>
+    <em>Fig: Camera matrix</em>
 </p>
 
 To reconstruct the position of both cones and the racecar we used a approach called `Structure from Motion`, thereby we were able to simultaneously recover the 3D structure of the racetrack and the poses of the used cameras. As an input only the image coordinates of the cones and the racecar and the camera intrinsics need to be provided. The later consists in particular of the set focal length and the set resolution.
@@ -140,7 +140,11 @@ This results in a list of 3D coordinates of the cones and the position of the ra
 
 
 
-### Affine transformation:
+### Affine transformation
+
+At first glance the result looks like the real racetrack. If we take a closer look at the 3D coordinates of the reconstructed cone points we see that the points are not in the position as expected. That is because the 3D points are in relation to the first camera that is set as the origin of the coordinate system. That means the points need to be translated, rotated and in particular scaled to match the "real world". Transforming the points in all three ways is called a `Affine transformation` and can be applied by multiplying every 3D point with a `affine transformation matrix`. This matrix can be estimated with the knowledge of a correct mapping of 4 points, therefore it is necessary to measure the position from at least 4 cones. Thereby it is important that all 4 cones are not on the same plane to be able to transform 3D points that do not lie on this plane. 
+
+
 
 ```python
 -0.778266302285012 0.2502844001475607 2.6402778721299835
