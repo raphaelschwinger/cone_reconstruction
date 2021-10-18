@@ -1,13 +1,13 @@
-# Cone reconstruction
+## README
 
-Heavily based on https://github.com/geohot/twitchslam
+Our source code is heavily based on https://github.com/geohot/twitchslam
 
-## Dev container setup
+### Dev container setup
 
-Open Folder inside [Dev Container](https://code.visualstudio.com/docs/remote/create-dev-container)
-Access GUI at http://localhost:8080/vnc.html
+We bundled all dependencies in a docker container as some dependencies are not available in binary form and the correct python version is necessary to be able to run the code. Take a look at the `Dockerfile` for more information.
+With VSCode we are able to develop directly inside the container without any further setup, just install VS Code and Docker, clone this repository and click on "Open Folder inside [Dev Container](https://code.visualstudio.com/docs/remote/create-dev-container)". To access the graphical user interface you can use the VNC client accessible at `http://localhost:8080/vnc.html`.
 
-## Install Dependencies and get rendered video files
+### Install Dependencies and get rendered video files
 
 To install python dependencies run
 
@@ -17,11 +17,12 @@ pip install -r ./requirements
 
 The rendered image files are to big to version track (and its not a best practise), you can render them localy from in the script tab of the blender file. To open the Blenderfile you can use the `openBlender.py` script inside a blender directory.
 
-## Run Reconstruction
+### Run Reconstruction
 
 The main python script to start the reconstruction is `run_reconstruction.py`. As a parameter it expects a foldername.
 In this folder the following things should be present:
 
+- set correct camera focal length in lines 76, take a look at the related blender script to retrieve the correct value
 - a `.png` file containing the first frame for every camera, named `01.png` respectivly
 - a `.p2d` file containing the 2D points of the cones for every camera, named `01.p2d` respectivly
 - a folder called `frames` containing folders for every frame, in each of those:
@@ -33,11 +34,11 @@ python run_reconstruction.py blender-racetrack
 
 As a result the reconstructed 3D points of the car and the cones are saved in the files `car_reconstruction.p3d` and `cone_reconstruction.p3d`. Those coordinates are in relation to the first camera so they need to be transformed to be human readable.
 
-## Transform points
+### Transform points
 
 To transform the reconstructed points back to the coordinate system set in blender use the steps:
 
-- write the coordinates of the first 4 points in `cone_reconstruction.p3d` in a file named `known_points`
+- write the coordinates of the first 4 points in `cone_reconstruction.p3d` in a file named `known_points`, take care that the first points are not in one plane
 
 ```bash
 python transform.py blender-racetrack
@@ -45,12 +46,16 @@ python transform.py blender-racetrack
 
 A affine transformation matrix is calculated and applied to the points in `cone_reconstruction.p3d` and saved in `cone_transformation.p3d`.
 
-## Blender
+### Blender
 
 We use [Blender](https://www.blender.org/) to generate test images for reconstruction.
 For this task Blender can be scripted with the help of python. Scripts are bundled inside the `.blender` file and can be executed from within the "Scripting" tab.
 
 To start blender with the current directory set use the [script](https://stackoverflow.com/questions/9859404/opening-blender-a-program-from-a-specific-filepath-relative-paths-unix-execu/9940691#9940691) `openBlender` inside the cone-track folder.
+
+### Miscs
+
+* in `utlis.py` we implemented some functions of (pypangolin)[https://github.com/uoip/pangolin] to avoid using this outdated library
 
 ### Script to save images and cone tip coordinates in `.p2d`
 
