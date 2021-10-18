@@ -20,17 +20,57 @@ Claudius Anton Zelenka*
   * differ from previous group text -> do not copy text
  -->
 
-
 - The master project "Ground Truth Generation"  is a part of the "Rosyard" project. 
+  
+Autonomous racing is an emerging field within autonomous driving. In the last years, a few self-racing vehicles have been developed, both in academic and in the industrial research. The first known autonomous vehicle competition arXiv:1804.03252v1 [cs.RO] 9 Apr 2018 was the DARPA Grand Challenge, 
 
-- The SLAM algorithm will use the results of the master project to optimize the car by getting an accurate ground truth of the track and the car's position during a test race.
+
+
+Formula Student Germany organized the first autonomous racing competition in 2017 followed by other countries in 2018. Formula Student (FS) is an international engineering competition, in which multidisciplinary student teams compete with a self-developed racecar every year.
+
+
+--------------------
+
+- The main race consists of completing ten laps, as fast as possible, around an unknown track defined by small 228 × 335 mm cones. 
+  
+- Blue and yellow cones are used to distinguish the left and the right boundary respectively. The track is an up to 500m long closed circuit, with a minimum track width of 3m and the cones in the same boundary can be up to 5m apart. The track contains straights, hairpins, chicanes, multiple turns, and decreasing radius turns among others.
+
+
+--------------
+
+
+
+  -  Rosyard uses a SLAM algorithm to construct a map of the racing environment while simultaneously keeping track of a car's location within it.
+  -  Using SLAM facilitates detection and association of landmarks/cones. 
+
+We have to optimize the SLAM algorithm. 
+  - The algorithm needs an accurate ground truth of the track and the car's position during a test race.
+- This task of ground truth generation is divided into two subtasks.
+  - A ground truth of the cones has to be generated.
+  - The position of the car while racing.
+- The Goal of our project is to design an algorithm that calculates the corresponding ground truth of the racecar.
+  
+The SLAM algorithm will use the results of the master project to optimize the car by getting an accurate ground truth of the track and the car's position during a test race.
+
+The track is only marked with cones. The Simultaneous Localization and Mapping (SLAM) is designed to accept input from the camera processing pipeline. Only cones are considered as landmarks and other potential features are rejected. 
+
+Once the map is known, the car can drive in Localization Mode which can exploit the advantage of planning on the previously mapped race-track.
+
+Cones that mark the race-track are detected by camera to create a reconstruction of the race-track.
+
+The maximum range of the perception sensors limits  the vehicles path planning horizon. This problem can be overcome by mapping the track and localizing the vehicle within it. 
+
+The SLAM phase in which the module builds a 2D landmark map of the race track and the localization phase where the map is fixed and used to estimate the vehicle pose. 
+
 
 - This task of ground truth generation for the SLAM algorithm is divided into two subtasks. First, a ground truth of the race track has to be generated.  Second, the position of the car has to be recorded during a race. 
 
 
-- A race track of Rosyard usually roughly covers 50 x 150 meters and is marked by two rows of cones placed parallel to each other. The cones are placed at intervals of 5 meters lengthwise to the direction of travel, the width of the track is about 3 meters, and a cone has a height of 32 cm. 
 
 - In order to define the ground truth of the race track, it is therefore sufficient to determine the positions of these cones. We will use  3D scene reconstruction using images/videos of the race track. 
+
+---------------------------
+
 
 
 TODO:
@@ -39,36 +79,13 @@ TODO:
 - [ ] discussion on what methods could be used
 - [ ] what did the premilary group
 
----
-We have to optimize the SLAM algorithm. 
-  - The algorithm needs an accurate ground truth of the track and the car's position during a test race.
-- This task of ground truth generation is divided into two subtasks.
-  - A ground truth of the cones has to be generated.
-  - The position of the car while racing.
-- The Goal of our project is to design an algorithm that calculates the corresponding ground truth of the racecar.
 
 ---
-
-
-- "Rosyard" project:
-   - International design competition for Formula Student.
-   - The goal of (Raceyard) project is to implement a self-driving car for Formula Student  
-- (Rosyard) Race-Car discription:
-  - Weight: 185 kg
-  - Top speed: 130 km / h
-- Race-track discription:
-  -  Length: 500m (Contains straights, hairpins, multiple turns)
-  -  Width:  5m 
-  -  Cone length: 15cm 
 
 
 <!-- TODO: 
   * add this to the "Overview Section"
 -->
-### The SLAM algorithm
-  -  Rosyard uses a SLAM algorithm to construct a map of the racing environment while simultaneously keeping track of a car's location within it.
-  -  Using SLAM facilitates detection and association of landmarks/cones. 
-
 
 
 
@@ -85,8 +102,10 @@ We have to optimize the SLAM algorithm.
 
 ---
 ### 3D Scene Reconstruction:
-<img src="presentation/ComputerVision-682.png" width="200" />
-
+<p>
+    <img src="presentation/ComputerVision-682.png" alt>
+    <em>Fig: Camera matrix.</em>
+</p>
 
 To reconstruct the position of both cones and the racecar we used a approach called `Structure from Motion`, thereby we were able to simultaneously recover the 3D structure of the racetrack and the poses of the used cameras. As an input only the image coordinates of the cones and the racecar and the camera intrinsics need to be provided. The later consists in particular of the set focal length and the set resolution.
 
@@ -113,7 +132,12 @@ R = cv2.Rodrigues(rvecs)
 These informations is needed to further improve the 3D points with bundle adjustment. For this purpose we included the `g2o` library.
 This results in a list of 3D coordinates of the cones and the position of the racecar in the first frame of the video. To reconstruct the position of the racecar while in motion we repeated the steps for every frame of the video. Figure XX shows our initial visualisation of the result for the first frame.
 
-<img src="./presentation/reconstructed_racetrack.png" width="300" />
+
+<p>
+    <img src="./presentation/reconstructed_racetrack.png"  width="300">
+    <em>Fig: Blender Reconstruction</em>
+</p>
+
 
 
 ### Affine transformation:
