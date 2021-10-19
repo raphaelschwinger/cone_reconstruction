@@ -1,14 +1,13 @@
 # Master's Project: Deep Learning and Autonomous Racing
-
-
 ## Sommersemester 2021
-
+---
 
 By *Raphael Schwinger, Rakibuzzaman Mahmud*
 
 Supervisors : *Lars Schmarje,
 Claudius Anton Zelenka*
 
+---
 <!-- Global TODOs:
   * add figure labels
   * add references
@@ -16,56 +15,49 @@ Claudius Anton Zelenka*
 
 ## Project Overview
 
+Autonomous racing is an emerging field within autonomous driving. A few self-racing vehicles have been developed in the last years, both in industrial and academic research. The first known autonomous vehicle competition [[1]](#1) was the DARPA Grand Challenge.
 
-Autonomous racing is an emerging field within autonomous driving. In the last years, a few self-racing vehicles have been developed, both in industrial and  academic research. The first known autonomous vehicle competition [[1]](#1) 9 Apr 2018 was the DARPA Grand Challenge.
+Formula Student Germany organized the first autonomous racing competition in 2017, followed by other countries in 2018. Formula Student (FS) is an international engineering competition where multidisciplinary student teams compete with a self-developed racecar every year.
 
-Formula Student Germany organized the first autonomous racing competition in 2017 followed by other countries in 2018. Formula Student (FS) is an international engineering competition, in which multidisciplinary student teams compete with a self-developed racecar every year. 
+The main race consists of completing ten laps, as fast as possible, around an unknown track defined by small 228 × 335 mm cones. Blue and yellow cones distinguish the left and the right boundary, respectively. The track is a 500m long closed circuit, with a width of 3m, and the cones in the same boundary can be up to 5m apart. The track contains straights, hairpins, chicanes, multiple turns, and decreasing radius turns.[[2]](#2)
 
-The main race consists of completing ten laps, as fast as possible, around an unknown track defined by small 228 × 335 mm cones. Blue and yellow cones are used to distinguish the left and the right boundary respectively. The track is 500m long closed circuit, with a width of 3m and the cones in the same boundary can be up to 5m apart. The track contains straights, hairpins, chicanes, multiple turns, and decreasing radius turns among others.
+The master project "Ground Truth Generation"  is a part of the "Rosyard" project to implement a self-driving car for the Formula Student Competition.[[3]](#3)
 
-The master project "Ground Truth Generation"  is a part of the "Rosyard" project with the goal to implement a self-driving car for Formula Student Competation.
+---
 
+In order to make the vehicle race fully autonomous, the car uses two modes of operation, Simultaneous Localization and Mapping (SLAM) mode, and Localization mode. [[4]](#4)
 
+- In SLAM mode, the vehicle path has to be computed using the local perception sensors, and a map of the track has to be generated.
 
---------------------
-
-
-In order to make the vehicle race fully autonomous, the car uses two modes of operation, Simultaneous Localization and Mapping (SLAM) mode and Localization mode.
-
-- In SLAM mode, the vehicle path has to be computed using the local perception sensors and a map of the track has to be generated. 
-
-- In Localization mode, the goal is to race as fast as possible in an already mapped track. 
+- In Localization mode, the goal is to race as fast as possible in an already mapped track.
   
-As previously stated, the track is only marked with cones and only cones are considered as landmarks and other potential features are rejected. Cones that mark the race-track are detected by camera to create a reconstruction of the race-track.
-
+As previously stated, the track is marked with cones, and only cones are considered landmarks, and other potential features are rejected. Cameras detect Cones that mark the racetrack to create a reconstruction of the racetrack.
 
 The objective of our project is to design an algorithm that calculates the corresponding ground truth of the racing environment. The SLAM algorithm will use the results of this master project to optimize the car by getting an accurate ground truth of the track and the car's position during a test race.
 
 This task of ground truth generation for the SLAM algorithm is divided into two subtasks.  
 
 - First, a ground truth of the race track has to be generated.  
-- Second, the position of the car has to be recorded during a race. 
+- Second, the position of the car has to be recorded during a race.
 
-In order to define the ground truth of the race track, it is therefore sufficient to determine the positions of these cones. We will use  3D scene reconstruction using images/videos of the race track. 
+In order to define the ground truth of the race track, it is therefore sufficient to determine the positions of these cones. We will use  3D scene reconstruction using images/videos of the race track.
 
-And To determine the ground truth for the racecar, we need a video recording of the car racing around the racetrack, making at least one lap. Then we can take every frame from the video and reconstruct the car's position for each frame.
+Furthermore, To determine the ground truth for the racecar, we need a video recording of the car racing around the racetrack, making at least one lap. Then we can take every frame from the video and reconstruct the car's position for each frame.
 
-Once the ground truth is generated, the car can drive in Localization Mode which can exploit the advantage of planning on the mapped race-track.
+Once the ground truth is generated, the car can drive in Localization Mode, exploiting the advantage of planning on the mapped racetrack.
 
 ---
 
+### Possible methods:
 
+During the project's planning phase, we discussed many ideas that could solve the racecar tracking issue.
 
+- **LiDAR** : LiDAR is the most accurate compared to the other devices, but it is also the most expensive one. Since the budget was one of our limitations, we discarded the idea.
+- **GPS** : Commercially available GPSs are highly accurate, but they are also expensive to get.
 
-<!-- TODO: 
-  * keep this short, max 1 page
--->
-### Possible methods
-
-- **LiDAR** : More accurate but expensive.
-- **GPS** : High accuracy GPS is expensive and commercially available.
-- **UWB based Triangulation** : Using UWB to triangulate car's position. Similar technology of AirTag but we do not have enough technical knowledge for implementation.
-- **Image based 3D Reconstruction** : Taking the position of the cones/car and using 3D scene reconstruction using images/videos of the race-track.
+- **UWB based Triangulation** : After the release of apple AirTag, we were motivated to discuss the possibility of UWB technology. We discussed using UWB to triangulate the car's position, but we do not have enough technical knowledge and expertise with UWB to implement the ideas.
+  
+- **Image-based 3D Reconstruction** : We can use multiple cameras to record the racecar racing around the racetrack and get the position of cones and the car. After that, we can make a 3D scene reconstruction scene using the data we collected.
 
 ---
 ### 3D Scene Reconstruction:
@@ -391,13 +383,15 @@ To start blender with the current directory set use the [script](https://stackov
 
 * in `utlis.py` we implemented some functions of (pypangolin)[https://github.com/uoip/pangolin] to avoid using this outdated library
 
-
+---
 ## References
-<a id="1">[1]</a> 
-https://arxiv.org/abs/1804.03252
+<a id="1">[1]</a>
+M. B. K. Iagnemma, “Special issue on the darpa grand challenge, part
+2,” Journal of Field Robotics, vol. 23, pp. 661–692, September 2006.
+
+<a id="2">[2]</a> “Formula student rules 2017 v1.1,” 2017.
+
+<a id="3">[3]</a> https://www.mip.informatik.uni-kiel.de/en/theses-and-projects/rosyard
 
 
-
-
-
-
+<a id="4">[4]</a> Valls, Miguel & Hendrikx, Hubertus & Reijgwart, Victor & Meier, Fabio & Sa, Inkyu & Dube, Renaud & Gawel, Abel & Bürki, Mathias & Siegwart, Roland. (2018). Design of an Autonomous Racecar: Perception, State Estimation and System Integration. 2048-2055. 10.1109/ICRA.2018.8462829. 
