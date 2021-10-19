@@ -16,76 +16,43 @@ Claudius Anton Zelenka*
 
 ## Project Overview
 
-<!-- TODO:
-  * differ from previous group text -> do not copy text
- -->
 
-- The master project "Ground Truth Generation"  is a part of the "Rosyard" project. 
-  
-Autonomous racing is an emerging field within autonomous driving. In the last years, a few self-racing vehicles have been developed, both in academic and in the industrial research. The first known autonomous vehicle competition arXiv:1804.03252v1 [cs.RO] 9 Apr 2018 was the DARPA Grand Challenge, 
+Autonomous racing is an emerging field within autonomous driving. In the last years, a few self-racing vehicles have been developed, both in industrial and  academic research. The first known autonomous vehicle competition [[1]](#1) 9 Apr 2018 was the DARPA Grand Challenge.
 
+Formula Student Germany organized the first autonomous racing competition in 2017 followed by other countries in 2018. Formula Student (FS) is an international engineering competition, in which multidisciplinary student teams compete with a self-developed racecar every year. 
 
+The main race consists of completing ten laps, as fast as possible, around an unknown track defined by small 228 × 335 mm cones. Blue and yellow cones are used to distinguish the left and the right boundary respectively. The track is 500m long closed circuit, with a width of 3m and the cones in the same boundary can be up to 5m apart. The track contains straights, hairpins, chicanes, multiple turns, and decreasing radius turns among others.
 
-Formula Student Germany organized the first autonomous racing competition in 2017 followed by other countries in 2018. Formula Student (FS) is an international engineering competition, in which multidisciplinary student teams compete with a self-developed racecar every year.
+The master project "Ground Truth Generation"  is a part of the "Rosyard" project with the goal to implement a self-driving car for Formula Student Competation.
+
 
 
 --------------------
 
-- The main race consists of completing ten laps, as fast as possible, around an unknown track defined by small 228 × 335 mm cones. 
+
+In order to make the vehicle race fully autonomous, the car uses two modes of operation, Simultaneous Localization and Mapping (SLAM) mode and Localization mode.
+
+- In SLAM mode, the vehicle path has to be computed using the local perception sensors and a map of the track has to be generated. 
+
+- In Localization mode, the goal is to race as fast as possible in an already mapped track. 
   
-- Blue and yellow cones are used to distinguish the left and the right boundary respectively. The track is an up to 500m long closed circuit, with a minimum track width of 3m and the cones in the same boundary can be up to 5m apart. The track contains straights, hairpins, chicanes, multiple turns, and decreasing radius turns among others.
+As previously stated, the track is only marked with cones and only cones are considered as landmarks and other potential features are rejected. Cones that mark the race-track are detected by camera to create a reconstruction of the race-track.
 
 
---------------
+The objective of our project is to design an algorithm that calculates the corresponding ground truth of the racing environment. The SLAM algorithm will use the results of this master project to optimize the car by getting an accurate ground truth of the track and the car's position during a test race.
 
+This task of ground truth generation for the SLAM algorithm is divided into two subtasks.  
 
+- First, a ground truth of the race track has to be generated.  
+- Second, the position of the car has to be recorded during a race. 
 
-  -  Rosyard uses a SLAM algorithm to construct a map of the racing environment while simultaneously keeping track of a car's location within it.
-  -  Using SLAM facilitates detection and association of landmarks/cones. 
+In order to define the ground truth of the race track, it is therefore sufficient to determine the positions of these cones. We will use  3D scene reconstruction using images/videos of the race track. 
 
-We have to optimize the SLAM algorithm. 
-  - The algorithm needs an accurate ground truth of the track and the car's position during a test race.
-- This task of ground truth generation is divided into two subtasks.
-  - A ground truth of the cones has to be generated.
-  - The position of the car while racing.
-- The Goal of our project is to design an algorithm that calculates the corresponding ground truth of the racecar.
-  
-The SLAM algorithm will use the results of the master project to optimize the car by getting an accurate ground truth of the track and the car's position during a test race.
+And To determine the ground truth for the racecar, we need a video recording of the car racing around the racetrack, making at least one lap. Then we can take every frame from the video and reconstruct the car's position for each frame.
 
-The track is only marked with cones. The Simultaneous Localization and Mapping (SLAM) is designed to accept input from the camera processing pipeline. Only cones are considered as landmarks and other potential features are rejected. 
-
-Once the map is known, the car can drive in Localization Mode which can exploit the advantage of planning on the previously mapped race-track.
-
-Cones that mark the race-track are detected by camera to create a reconstruction of the race-track.
-
-The maximum range of the perception sensors limits  the vehicles path planning horizon. This problem can be overcome by mapping the track and localizing the vehicle within it. 
-
-The SLAM phase in which the module builds a 2D landmark map of the race track and the localization phase where the map is fixed and used to estimate the vehicle pose. 
-
-
-- This task of ground truth generation for the SLAM algorithm is divided into two subtasks. First, a ground truth of the race track has to be generated.  Second, the position of the car has to be recorded during a race. 
-
-
-
-- In order to define the ground truth of the race track, it is therefore sufficient to determine the positions of these cones. We will use  3D scene reconstruction using images/videos of the race track. 
-
----------------------------
-
-
-
-TODO:
-- [ ] introduce Raceyard project
-- [ ] introduce problem, why does car needs to be tracked
-- [ ] discussion on what methods could be used
-- [ ] what did the premilary group
-
+Once the ground truth is generated, the car can drive in Localization Mode which can exploit the advantage of planning on the mapped race-track.
 
 ---
-
-
-<!-- TODO: 
-  * add this to the "Overview Section"
--->
 
 
 
@@ -424,10 +391,10 @@ To start blender with the current directory set use the [script](https://stackov
 
 * in `utlis.py` we implemented some functions of (pypangolin)[https://github.com/uoip/pangolin] to avoid using this outdated library
 
-# References:
 
-
-
+## References
+<a id="1">[1]</a> 
+https://arxiv.org/abs/1804.03252
 
 
 
