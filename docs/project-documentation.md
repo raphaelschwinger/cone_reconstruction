@@ -128,62 +128,123 @@ At first glance the result looks like the real racetrack. If we take a closer lo
 
 ## Reconstruction of the race-track using Blender :
 
-TODO:
-- [ ] Blender, why?
+  To make the reconstruction, we need the video file of the racecar racing around the racetrack. Then we can take the car's 2D position for each frame. However, because of Covid-19, it was not possible to make a real-world racing scenario and record a racing video of the car. So we had to improvise and work on a simulated racing environment which we created on Blender.
+
+- Blender Environmental Elements:
+  - Camera:
+    - Camera Settings: Focal length 15 mm
+    - Camera height: 1.5 m
+    - Calibration: We used a python script for camera calibration.
+    - Video: The video we exported has a resolution of 4k.
+  - Car: We used a realistic Rosyard car model.
+    - Height:
+    - Width:
+    - Length: 
+  
+<p>
+  <img src="./presentation/blender-car.jpg"  width="300">
+  <em>Fig: Blender Car Model</em>
+</p>
+
+  - Cones: We used Yellow and Blue cones with a height of 150 CM,
+
+<p>
+  <img src="./presentation/camera-prespective.gif"  width="300">
+  <em>Fig: Racetrack From Camera 1</em>
+</p>
 
 
-- **Blender** :
-  - Why Blender?
-  - Scene Construction
-    - Camera Settings : Focal length 15 mm
-    - Camera height : 1.5 m
-    - 4k resolution
+  - Skydome: To make the environment look like a real-world scenario, we used skydome to make it look like a sky on the horizon.
 
+  - Asphalt floor: We added asphalt texture on the ground to make the racetrack look like a real racetrack 
+  
+  - Scene Construction : 
+  We made a circular racetrack with a length of XX M and XX number of cones.
+<p>
+  <img src="./presentation/race-track.gif"  width="300">
+  <em>Fig: Circular Racetrack</em>
+</p>
 
- Getting 2D cone and race-car's position point using scripts
-
+  - Blender Scripts :
+      We can use Python scripts in Blender to get cones and race-car's position points from each camera.
+      - Script for getting 2D positions of the cones:  
 ```
 for cone in coneCollection.objects:
         # get 3d coordinates of cone
         location = cone.location.copy()
         # location is the bottom of a cone and not the tip, the cone is 25cm high
-        location[2] = cone.location[2]
+        location[2] = cone.location[2] + 0.25
         co_2d = bpy_extras.object_utils.world_to_camera_view(scene, camera, location)
+        # If you want pixel coords
+        render_scale = scene.render.resolution_percentage / 100
+        render_size = (
+                int(scene.render.resolution_x * render_scale),
+                int(scene.render.resolution_y * render_scale),
+                    )
+        with open(camera.name + '.p2d', 'a') as f:
+            print(f'{co_2d.x * render_size[0]} {res_y - co_2d.y * render_size[1]}', file=f)
 ```
+ 
+  -  Script for getting 2D position of the Racecar:
+ 
+   ```
+   for camera in cameraCollection.objects:
+        bpy.context.scene.camera = camera
+        bpy.context.scene.render.filepath = './frames/' + str(f).zfill(4) + '/' + camera.name
+        bpy.context.scene.render.image_settings.file_format='PNG'
+        bpy.ops.render.render(use_viewport=False, write_still=False)
 
+        # erase content of .p2d file
+        open(os.path.join(current_frame_path, camera.name +  '.p2d'), 'w').close()
 
-## Tracking the racecar
+        # iterate through cones
+        car = bpy.data.objects['whole_car']
+        # get 3d coordinates of cone
+        location = car.location.copy()
+        # location is the bottom of a cone and not the tip, the cone is 25cm high
+        location[2] = car.location[2]
+        co_2d = bpy_extras.object_utils.world_to_camera_view(scene, camera, location)
+        # If you want pixel coords
+        render_scale = scene.render.resolution_percentage / 100
+        render_size = (
+                int(scene.render.resolution_x * render_scale),
+                int(scene.render.resolution_y * render_scale),
+                    )
+        with open(os.path.join(current_frame_path, camera.name +  '.p2d'), 'a') as file:
+            print(f'{co_2d.x * render_size[0]} {res_y - co_2d.y * render_size[1]}', file=file) 
+   ``` 
 
-TODO:
-- [ ] Picture information from blender
-- [ ] Tracking with openCV :
+  More about scripts  and how to implement them can be found in the Readme file.
 
-    - Comparison of different Object detection algorithm from openCV and how we choose CSRT algorithm as the best one.
-- [ ] exact tracking? #25
-- [ ] results #26
+  
 
 ---
 
+## Tracking the racecar
+
+After we rendered the blender scene and got the video file, we applied the OpenCV object tracking algorithm to the video file. We tried multiple tracking algorithms to track the racecar, but only one of them showed promising results. Details and background of the algorithms are included below:
+
+
 
 - **OpenCV Tracking Algorithm** :
-  - **KCF** : 
+  - **KCF** [[5]](#5): 
     - Kernelized Correlation Filter is a novel tracking framework 
     - One of the recent findings which has shown good results.
     - Based on the idea of traditional correlational filter.
     - It uses kernel trick and circulant matrices to improve the computation speed significantly.
 
----
 
-- **CSRT** : 
+- **CSRT** [[6]](#6): 
     - Channel and Spatial Reliability Tracking is a constrained filter learning with an arbitrary spatial reliability map.
     - CSRT utilizes a spatial reliability map. 
     - Adjusts the filter support to the part of the object suitable for tracking.
 
-- **GOTRUN**: 
+- **GOTRUN** [[7]](#7):
   - Generic Object Tracking Using Regression Networks.
   - A Deep Learning based tracking algorithm.
   - Did not perform well.
 
+---
 
 
 ```
@@ -206,19 +267,20 @@ p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
 
 
 ##### Saving the points for each frame:
-
+We have to save the center point of the bounding box, So we divide the bounding box by 2. 
 ```
 with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
                 print(f'{(p1[0] + p2[0]) / 2 } {(p1[1] + p2[1]) / 2 }', file=f)
 ```
 
+---
 
-- **Color Tracking**
-  - Tracking the Racecar based on color. i.e: Red Car, Red Colored Cylinder.
-
+### Color Tracking
+  - To try another approach for tracking, we can track an object based on color—for example, Red Car, Red Colored Cylinder. Consequently, instead of tracking the whole car, we added a red-colored cylinder on top of the racecar to make the tracking even more accurate. 
+  
 ```
 
-    # definig the range of red color
+    # defining the range of red color
     # lower boundary RED color range values; Hue (0 - 10)
     lower1 = np.array([0, 50, 30])
     upper1 = np.array([5, 255, 255])
@@ -227,6 +289,21 @@ with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
     lower2 = np.array([180,50,30])
     upper2 = np.array([180,255,255])
 
+```
+Tracking and saving the 2D points: 
+
+```
+        # draw rectangle
+        img = cv2.rectangle(frame, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
+        cv2.putText(frame, "RED color", (x, y),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255))
+        # save result
+        with open(os.path.join(current_frame_path, cam_name + '.p2d'), 'a') as f:
+            # use bottom of reactangle as center
+            print(f'{result_x} {result_y}', file=f)
+        with open(os.path.join(path, 'tracking-result-'+  cam_name + '.p2d'), 'a') as f:
+            print(f'{result_x}; {result_y}', file=f)
+        cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
 ```
 
 
@@ -317,11 +394,15 @@ TODO:
 6. Perform 3D Scene Reconstruction run_reconstruction
 7. Transform result with affine transformation and the "correct" location of the 4 known objects
 
+## Project Limitations:
+
+- We are only evaluating  Blender generated scene. We don not know how our solution will perform in a real racetrack.
+- Since this is a Simulated racing environment,the accuracy and noise of the real world are not considered.
 
 ## Conclusion :
 
 - **Future prospects** :
-  - Implementing the algorithm in a real-world scenario.
+  - Implementing the algorithm in a real-world scenario and evaluating our solution.
   - To improve the tracking accuracy we can try better methods. i.e: Train a CNN model using images of the Racecar.
 
 ## README
@@ -395,3 +476,11 @@ M. B. K. Iagnemma, “Special issue on the darpa grand challenge, part
 
 
 <a id="4">[4]</a> Valls, Miguel & Hendrikx, Hubertus & Reijgwart, Victor & Meier, Fabio & Sa, Inkyu & Dube, Renaud & Gawel, Abel & Bürki, Mathias & Siegwart, Roland. (2018). Design of an Autonomous Racecar: Perception, State Estimation and System Integration. 2048-2055. 10.1109/ICRA.2018.8462829. 
+
+
+<a id="5">[5]</a> High-Speed Tracking with Kernelized Correlation Filters https://arxiv.org/abs/1404.7584
+
+<a id="6">[6]</a> Discriminative Correlation Filter with Channel and Spatial Reliability 
+https://arxiv.org/abs/1611.08461
+
+<a id="7">[7]</a> Learning to Track at 100 FPS with Deep Regression Networks  https://arxiv.org/abs/1604.01802
