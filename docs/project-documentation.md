@@ -130,26 +130,24 @@ At first glance the result looks like the real racetrack. If we take a closer lo
 
 #### Blender Environmental Elements:
   - **Camera**: We set the height of the camera as 1.5 m and focal length to 15 mm. We used a python script for camera calibration which is included in readme. The video we exported has a resolution of 4k.
-  - **Car**: We used a realistic Rosyard car model with height of XX , width XX and length XX.  
+  - **Car**: We used a realistic Rosyard car model with height of 0.90 m , width 1.15 and length 2.45 m.  
   
 <p>
-  <img src="./presentation/blender-car .jpg"  width="300">
+  <img src="blender-car.jpeg"  width="300">
   <em>Fig: Blender Car Model</em>
 </p>
 
-  - **Track**: To mark the track, We used Yellow and Blue cones with a height of 150 CM. We made a circular racetrack with a length of XX M and XX number of cones.  We added asphalt texture on the ground to make the racetrack look like a real racetrack. Also, To make the environment look like a real-world scenario, we used skydome to make it look like a sky on the horizon.
+  - **Track**: To mark the track, We used Yellow and Blue cones with a height of 0.15 m. We made a circular racetrack with a length of XX M and 48 cones, 24 cones on each side.  We added asphalt texture on the ground to make the racetrack look like a real racetrack. Also, To make the environment look like a real-world scenario, we used skydome to make it look like a sky on the horizon.
 
 
 <p>
-  <img src="./presentation/camera- .gif"  width="300">
-  <em>Fig: Racetrack From Camera 1</em>
+  <img src="blender-racetrack-1.jpeg"  width="320">
+  <img src="blender-racetrack-2.jpeg"  width="320">
+
+  <em>Fig: Circular Racetrack</em>
 </p>
 
  
-<p>
-  <img src="./presentation/race-track.gif"  width="300">
-  <em>Fig: Circular Racetrack</em>
-</p>
 
   - Blender Scripts : We used Python scripts in the script tab of Blender to do to following task from the perspective of each cameras.
       - Script for getting 2D positions of the Cones. 
@@ -202,7 +200,7 @@ p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
 ```
 
 
-##### Saving the points for each frame:
+### Saving the points for each frame:
 We have to save the center point of the bounding box, So we divide the bounding box by 2. 
 ```
 with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
