@@ -19,16 +19,14 @@ Autonomous racing is an emerging field within autonomous driving. A few self-rac
 
 Formula Student Germany organized the first autonomous racing competition in 2017, followed by other countries in 2018. Formula Student (FS) is an international engineering competition where multidisciplinary student teams compete with a self-developed racecar every year.
 
-The main race consists of completing ten laps, as fast as possible, around an unknown track defined by small 228 × 335 mm cones. Blue and yellow cones distinguish the left and the right boundary, respectively. The track is a 500m long closed circuit, with a width of 3m, and the cones in the same boundary can be up to 5m apart. The track contains straights, hairpins, chicanes, multiple turns, and decreasing radius turns.[[2]](#2)
+The main race consists of completing ten laps, as fast as possible, around an unknown track defined by small 228 × 335 mm cones. Blue and yellow cones distinguish the left and the right boundary, respectively. The track is a 500m long closed circuit, with a width of 3m, and the cones in the same boundary can be up to 5m apart. The track contains straights, hairpins, chicanes, multiple turns, and decreasing radius turns. [[2]](#2)
 
-The master project "Ground Truth Generation"  is a part of the "Rosyard" project to implement a self-driving car for the Formula Student Competition.[[3]](#3)
+The master project "Ground Truth Generation"  is a part of the "Rosyard" project to implement a self-driving car for the Formula Student Competition. [[3]](#3)
 
----
 
 In order to make the vehicle race fully autonomous, the car uses two modes of operation, Simultaneous Localization and Mapping (SLAM) mode, and Localization mode. [[4]](#4)
 
 - In SLAM mode, the vehicle path has to be computed using the local perception sensors, and a map of the track has to be generated.
-
 - In Localization mode, the goal is to race as fast as possible in an already mapped track.
   
 As previously stated, the track is marked with cones, and only cones are considered landmarks, and other potential features are rejected. Cameras detect Cones that mark the racetrack to create a reconstruction of the racetrack.
@@ -130,91 +128,37 @@ At first glance the result looks like the real racetrack. If we take a closer lo
 
   To make the reconstruction, we need the video file of the racecar racing around the racetrack. Then we can take the car's 2D position for each frame. However, because of Covid-19, it was not possible to make a real-world racing scenario and record a racing video of the car. So we had to improvise and work on a simulated racing environment which we created on Blender.
 
-- Blender Environmental Elements:
-  - Camera:
-    - Camera Settings: Focal length 15 mm
-    - Camera height: 1.5 m
-    - Calibration: We used a python script for camera calibration.
-    - Video: The video we exported has a resolution of 4k.
-  - Car: We used a realistic Rosyard car model.
-    - Height:
-    - Width:
-    - Length: 
+#### Blender Environmental Elements:
+  - **Camera**: We set the height of the camera as 1.5 m and focal length to 15 mm. We used a python script for camera calibration which is included in readme. The video we exported has a resolution of 4k.
+  - **Car**: We used a realistic Rosyard car model with height of XX , width XX and length XX.  
   
 <p>
-  <img src="./presentation/blender-car.jpg"  width="300">
+  <img src="./presentation/blender-car .jpg"  width="300">
   <em>Fig: Blender Car Model</em>
 </p>
 
-  - Cones: We used Yellow and Blue cones with a height of 150 CM,
+  - **Track**: To mark the track, We used Yellow and Blue cones with a height of 150 CM. We made a circular racetrack with a length of XX M and XX number of cones.  We added asphalt texture on the ground to make the racetrack look like a real racetrack. Also, To make the environment look like a real-world scenario, we used skydome to make it look like a sky on the horizon.
+
 
 <p>
-  <img src="./presentation/camera-prespective.gif"  width="300">
+  <img src="./presentation/camera- .gif"  width="300">
   <em>Fig: Racetrack From Camera 1</em>
 </p>
 
-
-  - Skydome: To make the environment look like a real-world scenario, we used skydome to make it look like a sky on the horizon.
-
-  - Asphalt floor: We added asphalt texture on the ground to make the racetrack look like a real racetrack 
-  
-  - Scene Construction : 
-  We made a circular racetrack with a length of XX M and XX number of cones.
+ 
 <p>
   <img src="./presentation/race-track.gif"  width="300">
   <em>Fig: Circular Racetrack</em>
 </p>
 
-  - Blender Scripts :
-      We can use Python scripts in Blender to get cones and race-car's position points from each camera.
-      - Script for getting 2D positions of the cones:  
-```
-for cone in coneCollection.objects:
-        # get 3d coordinates of cone
-        location = cone.location.copy()
-        # location is the bottom of a cone and not the tip, the cone is 25cm high
-        location[2] = cone.location[2] + 0.25
-        co_2d = bpy_extras.object_utils.world_to_camera_view(scene, camera, location)
-        # If you want pixel coords
-        render_scale = scene.render.resolution_percentage / 100
-        render_size = (
-                int(scene.render.resolution_x * render_scale),
-                int(scene.render.resolution_y * render_scale),
-                    )
-        with open(camera.name + '.p2d', 'a') as f:
-            print(f'{co_2d.x * render_size[0]} {res_y - co_2d.y * render_size[1]}', file=f)
-```
+  - Blender Scripts : We used Python scripts in the script tab of Blender to do to following task from the perspective of each cameras.
+      - Script for getting 2D positions of the Cones. 
+      - Script for getting 2D position of the Racecar.
+      - Script for getting 3D position of the Racecar.
+      - Exporting the Rendered 4k video file.
  
-  -  Script for getting 2D position of the Racecar:
- 
-   ```
-   for camera in cameraCollection.objects:
-        bpy.context.scene.camera = camera
-        bpy.context.scene.render.filepath = './frames/' + str(f).zfill(4) + '/' + camera.name
-        bpy.context.scene.render.image_settings.file_format='PNG'
-        bpy.ops.render.render(use_viewport=False, write_still=False)
 
-        # erase content of .p2d file
-        open(os.path.join(current_frame_path, camera.name +  '.p2d'), 'w').close()
-
-        # iterate through cones
-        car = bpy.data.objects['whole_car']
-        # get 3d coordinates of cone
-        location = car.location.copy()
-        # location is the bottom of a cone and not the tip, the cone is 25cm high
-        location[2] = car.location[2]
-        co_2d = bpy_extras.object_utils.world_to_camera_view(scene, camera, location)
-        # If you want pixel coords
-        render_scale = scene.render.resolution_percentage / 100
-        render_size = (
-                int(scene.render.resolution_x * render_scale),
-                int(scene.render.resolution_y * render_scale),
-                    )
-        with open(os.path.join(current_frame_path, camera.name +  '.p2d'), 'a') as file:
-            print(f'{co_2d.x * render_size[0]} {res_y - co_2d.y * render_size[1]}', file=file) 
-   ``` 
-
-  More about scripts  and how to implement them can be found in the Readme file.
+More about scripts and how to implement them can be found in the Readme file.
 
   
 
@@ -222,30 +166,22 @@ for cone in coneCollection.objects:
 
 ## Tracking the racecar
 
-After we rendered the blender scene and got the video file, we applied the OpenCV object tracking algorithm to the video file. We tried multiple tracking algorithms to track the racecar, but only one of them showed promising results. Details and background of the algorithms are included below:
+After we rendered the blender scene and got the video file, we applied the OpenCV object tracking algorithm to the video file. We tried multiple tracking algorithms to track the position of the racecar. Details and background of the algorithms are included below:
 
 
 
 - **OpenCV Tracking Algorithm** :
   - **KCF** [[5]](#5): 
-    - Kernelized Correlation Filter is a novel tracking framework 
-    - One of the recent findings which has shown good results.
-    - Based on the idea of traditional correlational filter.
-    - It uses kernel trick and circulant matrices to improve the computation speed significantly.
-
+    - Kernelized Correlation Filter (KCF) is a novel tracking framework, and it is one of the recent findings which has shown promising results. KCF is based on the idea of the traditional correlational filter. It uses kernel trick and circulant matrices to improve the computation speed significantly.
 
 - **CSRT** [[6]](#6): 
-    - Channel and Spatial Reliability Tracking is a constrained filter learning with an arbitrary spatial reliability map.
-    - CSRT utilizes a spatial reliability map. 
-    - Adjusts the filter support to the part of the object suitable for tracking.
+    - Channel and Spatial Reliability Tracking is a constrained filter learning with an arbitrary spatial reliability map. It utilizes a spatial reliability map. CSRT adjusts the filter support to the part of the object suitable for tracking.
 
 - **GOTRUN** [[7]](#7):
-  - Generic Object Tracking Using Regression Networks.
-  - A Deep Learning based tracking algorithm.
-  - Did not perform well.
+  - Generic Object Tracking Using Regression Networks (GOTRUN) is a Deep Learning based tracking algorithm. GOTRUN is significantly faster than previous methods that use neural networks for tracking. The tracker uses a simple feed-forward network without any online training, and it can track generic objects at 100 fps. Nevertheless, in our case, GOTRUN did not perform well.
 
 ---
-
+#### Selecting the Tracker:
 
 ```
  tracker_types = ['KCF', 'CSRT']
@@ -276,8 +212,7 @@ with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
 ---
 
 ### Color Tracking
-  - To try another approach for tracking, we can track an object based on color—for example, Red Car, Red Colored Cylinder. Consequently, instead of tracking the whole car, we added a red-colored cylinder on top of the racecar to make the tracking even more accurate. 
-  
+  - To try another approach for tracking, we can track an object based on color—for example, a red Car, a red-colored cylinder. Therefore, We colored the whole car red, and we added a red-colored cylinder on top of the racecar to make the tracking even more accurate. We then compared the results for both of the approaches. 
 ```
 
     # defining the range of red color
@@ -374,7 +309,7 @@ To install python dependencies run
 pip install -r ./requirements
 ```
 
-The rendered image files are to big to version track (and its not a best practise), you can render them localy from in the script tab of the blender file. To open the Blenderfile you can use the `openBlender.py` script inside a blender directory.
+The rendered image files are to big to version track (and its not a best practise), you can render them locally from in the script tab of the blender file. To open the Blenderfile you can use the `openBlender.py` script inside a blender directory.
 
 ### Run Reconstruction
 
