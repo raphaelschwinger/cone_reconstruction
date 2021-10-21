@@ -307,65 +307,29 @@ Tracking and saving the 2D points:
 ```
 
 
-## Results:
+## Results
 
+We ran our 3D scene reconstruction algorithm with the tracking results of the `blender-position` script, the `CSRT-tracker`,the `color-tacker` tracking the whole car and tracking only a `red-cylinder` on top of the car. To better compare the results we than aligned the starting position of the racecar, the result is shown in the figure below.
 
-![width:900px](presentation/transformed.png)
+<p>
+  <img src="./presentation/normalized.png"  width="600">
+  <em>Fig: 2D plot of reconstruction</em>
+</p>
 
+As we can see the reconstruction using the `blender-position` is performing very well. Also the `reconstructed cones` are very close to the original cones. `CSRT-tracker` is way off from the `real position` of the racecar and is jumping around a lot. `color-tracker` and `red-cylinder` are able to follow the racecar and almost recover a position between the cones.
 
-#### Move track to starting point
+As shown in the next figure the mean squared error confirms those findings. We did not include the high error of `CSRT-tracker` which is `160.54`.  
+<p>
+  <img src="./presentation/mse2.png"  width="600">
+  <em>Fig: mean squared error</em>
+</p>
 
-![width:900px](presentation/normalized.png)
+We found a correlation between the optimization error returned by the `g2o` optimizer and substituted those points. Also we applied a convolution filter to smoothen the result as you can see in the figure below. This did not improve the mean squared error tough. For more details take a look at the jupiter notebook `notebook.ipynb` we used to analyse the reconstruction results.
 
-
-#### Mean squared error
-
-![width:900px](presentation/mse.png)
-
-
-
-#### Mean squared error
-
-![width:900px](presentation/mse2.png)
-
-
-#### Distance / Error
-
-![height:300px](presentation/distance.png)
-![height:300px](presentation/error.png)
-
-
-#### Prune points with high error
-
-![height:300px](presentation/prune_distance.png)
-![height:300px](presentation/prune_error.png)
-
-
-
-#### Pruned plot
-
-![width:900px](presentation/prune_plot.png)
-
-
-
-#### Pruned Mean squared error
-
-![width:900px](presentation/prune_mse.png)
-
-
-
-#### Convolution filter
-
-![width:900px](presentation/smoothend_plot.png)
-
-
-
-#### Mean squared error
-
-![width:900px](presentation/smoothend_mse.png)
-
-
-
+<p>
+  <img src="./presentation/smoothend_plot.png"  width="600">
+  <em>Fig: smoothened  2D plot</em>
+</p>
 
 ## Evaluation :
 
