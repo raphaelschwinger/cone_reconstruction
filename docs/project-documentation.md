@@ -19,7 +19,7 @@ Autonomous racing is an emerging field within autonomous driving. A few self-rac
 
 Formula Student Germany organized the first autonomous racing competition in 2017, followed by other countries in 2018. Formula Student (FS) is an international engineering competition where multidisciplinary student teams compete with a self-developed racecar every year.
 
-The main race consists of completing ten laps, as fast as possible, around an unknown track defined by small 228 × 335 mm cones. Blue and yellow cones distinguish the left and the right boundary, respectively. The track is a 500m long closed circuit, with a width of 3m, and the cones in the same boundary can be up to 5m apart. The track contains straights, hairpins, chicanes, multiple turns, and decreasing radius turns. [[2]](#2)
+The main race consists of completing ten laps, as fast as possible, around an unknown track defined by small 228 × 335 mm cones. Blue and yellow cones distinguish the left and the right boundary. The track is a 500m long closed circuit, with a width of 3m, and the cones in the same boundary can be up to 5m apart. The track contains straights, hairpins, chicanes, multiple turns and decreasing radius turns. [[2]](#2)
 
 The master project "Ground Truth Generation"  is a part of the "Rosyard" project to implement a self-driving car for the Formula Student Competition. [[3]](#3)
 
@@ -31,24 +31,21 @@ In order to make the vehicle race fully autonomous, the car uses two modes of op
   
 As previously stated, the track is marked with cones, and only cones are considered landmarks, and other potential features are rejected. Cameras detect Cones that mark the racetrack to create a reconstruction of the racetrack.
 
-The objective of our project is to design an algorithm that calculates the corresponding ground truth of the racing environment. The SLAM algorithm will use the results of this master project to optimize the car by getting an accurate ground truth of the track and the car's position during a test race.
+The objective of our project is to design an algorithm that calculates the corresponding ground truth of the racing environment. With the help of the results of this master project in a test race the SLAM algorithm can then be evaluated and optimized.
 
 This task of ground truth generation for the SLAM algorithm is divided into two subtasks.  
 
 - First, a ground truth of the race track has to be generated.  
 - Second, the position of the car has to be recorded during a race.
 
-In order to define the ground truth of the race track, it is therefore sufficient to determine the positions of these cones. We will use  3D scene reconstruction using images/videos of the race track.
-
-Furthermore, To determine the ground truth for the racecar, we need a video recording of the car racing around the racetrack, making at least one lap. Then we can take every frame from the video and reconstruct the car's position for each frame.
-
-Once the ground truth is generated, the car can drive in Localization Mode, exploiting the advantage of planning on the mapped racetrack.
+In order to define the ground truth of the race track, it is therefore sufficient to determine the positions of these cones. 
+Once the ground truth is generated, the car can drive in Localization Mode, exploiting the advantage of additional knowledge of the mapped racetrack.
 
 ---
 
-### Possible methods:
+### Possible methods
 
-During the project's planning phase, we discussed many ideas that could solve the racecar tracking issue.
+During the project's planning phase, we discussed many ideas that could be used to generate the ground truth of the racecars movement and the track.
 
 - **LiDAR** : LiDAR is the most accurate compared to the other devices, but it is also the most expensive one. Since the budget was one of our limitations, we discarded the idea.
 - **GPS** : Commercially available GPSs are highly accurate, but they are also expensive to get.
@@ -57,29 +54,31 @@ During the project's planning phase, we discussed many ideas that could solve th
   
 - **Image-based 3D Reconstruction** : We can use multiple cameras to record the racecar racing around the racetrack and get the position of cones and the car. After that, we can make a 3D scene reconstruction scene using the data we collected.
 
+We decided to use  3D scene reconstruction using images/videos of the race track since we thought that might be the cheapest way and also scientifically the most interesting one.
+
 ---
-### 3D Scene Reconstruction:
-<p>
-    <img src="presentation/ComputerVision-682.png" alt>
+### 3D Scene Reconstruction
+<p align="center">
+    <img src="presentation/ComputerVision-682.png"   width="300" alt>
     <em>Fig: Camera matrix</em>
 </p>
 
 To reconstruct the position of both cones and the racecar we used a approach called `Structure from Motion`, thereby we were able to simultaneously recover the 3D structure of the racetrack and the poses of the used cameras. As an input only the image coordinates of the cones and the racecar and the camera intrinsics need to be provided. The later consists in particular of the set focal length and the set resolution.
 
-First the first camera is set as the origin. The task is now to acquire the pose and position of the consecutive cameras to be able to triangulate the position of the cones and racecar. For the the second camera this can be reconstructed with the `essential matrix` $E = [t]_x R$. OpenCV provides the following functions to do this.
+First, the first camera is set as the origin. The task is now to acquire the pose and position of the consecutive cameras to be able to triangulate the position of the cones and racecar as illustrated in the figure above. So we need to obtain the translation $t$ and rotation $R$ of the second camera in relation to the first camera. This can be calculated with the `essential matrix` $E = [t]_x R$. OpenCV provides the following functions that need the 2D input points of both cameras and the camera intrinsics as an input.
 
 ```python
   E = cv2.findEssentialMat(points_2D_1, points_2D_2, cameraMatrix )
   R, t = cv2.recoverPose(E, points_2D_1, points2D_2, cameraMatrix)
 ```
 
-Afterwards the 3D coordinates of the cones and the racecar can be triangulated.
+Afterwards the 3D coordinates of the cones and the racecar can be triangulated.[[8]](#8)
 
 ```python
    points3D = cv2.triangulatePoints(pose_1, pose_2, points1, points2)
 ```
 
-For consecutive cameras $R$ and $t$ can be recovered with Random sample consensus `RANSAC` algorithm and the `Rodrigues algorithm`.
+For consecutive cameras $R$ and $t$ can be recovered with Random sample consensus `RANSAC` algorithm and the `Rodrigues algorithm` using the already estimated 3D points.
 
 ```python
 rvecs, t = cv2.solvePnPRansac(points_3D, points_2D, cameraMatrix)
@@ -87,10 +86,10 @@ R = cv2.Rodrigues(rvecs)
 ```
 
 These informations is needed to further improve the 3D points with bundle adjustment. For this purpose we included the `g2o` library.
-This results in a list of 3D coordinates of the cones and the position of the racecar in the first frame of the video. To reconstruct the position of the racecar while in motion we repeated the steps for every frame of the video. Figure XX shows our initial visualisation of the result for the first frame.
+This results in a list of 3D coordinates of the cones and the position of the racecar in the first frame of the video. To reconstruct the position of the racecar while in motion we repeated the steps for every frame of the video. The figure below shows our initial visualisation of the result for the first frame.
 
 
-<p>
+<p align="center">
     <img src="./presentation/reconstructed_racetrack.png"  width="300">
     <em>Fig: Blender Reconstruction</em>
 </p>
@@ -99,16 +98,8 @@ This results in a list of 3D coordinates of the cones and the position of the ra
 
 ### Affine transformation
 
-At first glance the result looks like the real racetrack. If we take a closer look at the 3D coordinates of the reconstructed cone points we see that the points are not in the position as expected. That is because the 3D points are in relation to the first camera that is set as the origin of the coordinate system. That means the points need to be translated, rotated and in particular scaled to match the "real world". Transforming the points in all three ways is called a `Affine transformation` and can be applied by multiplying every 3D point with a `affine transformation matrix`. This matrix can be estimated with the knowledge of a correct mapping of 4 points, therefore it is necessary to measure the position from at least 4 cones. Thereby it is important that all 4 cones are not on the same plane to be able to transform 3D points that do not lie on this plane. 
+At first glance the result looks like the real racetrack. If we take a closer look at the 3D coordinates of the reconstructed cone points we see that the points are not in the position as expected. That is because the 3D points are in relation to the first camera that is set as the origin of the coordinate system. That means the points need to be translated, rotated and in particular scaled to match the "real world". Transforming the points in all three ways is called an `affine transformation` and can be applied by multiplying every 3D point with a `affine transformation matrix`. This matrix can be estimated with the knowledge of a correct mapping of 4 points, therefore it is necessary to measure the position from at least 4 cones. Thereby it is important that all 4 positions are not on the same plane to be able to transform 3D points that do not lie on this plane. The figures below show the initial recovered 3D coordinates of the first four cones and the 3D coordinates after applying the affine transformation and matching the expected 3D coordinates. [[9]](#9)
 
-
-
-```python
--0.778266302285012 0.2502844001475607 2.6402778721299835
--0.777195115872759 0.24985856474532567 2.626459134354914
--0.7797482837759697 0.24871681814087102 2.610038240730838
--0.7793411462980047 0.2482823892723588 2.5890051058983867
-```
 
 ```python
     mat = cv2.estimateAffine3D(points_3D[:4], known_points_3d)
@@ -117,178 +108,93 @@ At first glance the result looks like the real racetrack. If we take a closer lo
     #   [ 0.00   0.00   0.00   0.15]]
 ```
 
-```python
--1.978 2.243 0.15
--1.976 2.131 0.15
--1.913 1.772 0.15
--1.956 1.676 0.15
-```
+<div style="page-break-after: always;"></div>
 
 ## Reconstruction of the race-track using Blender :
 
-  To make the reconstruction, we need the video file of the racecar racing around the racetrack. Then we can take the car's 2D position for each frame. However, because of Covid-19, it was not possible to make a real-world racing scenario and record a racing video of the car. So we had to improvise and work on a simulated racing environment which we created on Blender.
+  As mentioned above, to apply our 3D scene reconstruction algorithm we need video files of the car racing around the track filmed from at least 3 angles. Then we need to acquire the car's and cones 2D position for each frame. However, because of Covid-19, it was not possible to make a real-world racing scenario and record  racing videos of the car. So we had to improvise and work on a simulated racing environment which we created on Blender. This gives us also the benefit of directly exporting the 2D coordinates for each frame of the video. Additionally we do not need to worry about any noise in the video files as the cameras in blender are not suffering from physical constraints.
 
-#### Blender Environmental Elements:
-  - **Camera**: We set the height of the camera as 1.5 m and focal length to 15 mm. We used a python script for camera calibration which is included in readme. The video we exported has a resolution of 4k.
+#### Blender environmental elements:
+  - **Camera**: We set the height of the camera as 1.5 m and focal length to 15 mm. We used a python script for camera calibration which is included in README. The video we exported has a resolution of 4k.
   - **Car**: We used a realistic Rosyard car model with height of 0.90 m , width 1.15 and length 2.45 m.  
   
-<p>
+<p align="center">
   <img src="blender-car.jpeg"  width="300">
   <em>Fig: Blender Car Model</em>
 </p>
 
-  - **Track**: To mark the track, We used Yellow and Blue cones with a height of 0.15 m. We made a circular racetrack with a length of XX M and 48 cones, 24 cones on each side.  We added asphalt texture on the ground to make the racetrack look like a real racetrack. Also, To make the environment look like a real-world scenario, we used skydome to make it look like a sky on the horizon.
+  - **Track**: To mark the track, We used yellow and blue cones with a height of 0.15 m. We made a circular racetrack with 48 cones.  We added asphalt texture on the ground to make the racetrack look like a real racetrack. Also to make the environment look more realistic, we used a "skydome" to make it look like a sky on the horizon. 
 
 
-<p>
-  <img src="blender-racetrack-1.jpeg"  width="320">
-  <img src="blender-racetrack-2.jpeg"  width="320">
+<p style="display: table; align: center">
+  <img style="float: left" src="blender-racetrack-1.jpeg"  width="320">
+  <img style="float: left"src="blender-racetrack-2.jpeg"  width="320">
 
   <em>Fig: Circular Racetrack</em>
 </p>
-
- 
-
-  - Blender Scripts : We used Python scripts in the script tab of Blender to do to following task from the perspective of each cameras.
-      - Script for getting 2D positions of the Cones. 
-      - Script for getting 2D position of the Racecar.
-      - Script for getting 3D position of the Racecar.
-      - Exporting the Rendered 4k video file.
- 
-
-More about scripts and how to implement them can be found in the Readme file.
-
   
-
----
-
 ## Tracking the racecar
 
-After we rendered the blender scene and got the video file, we applied the OpenCV object tracking algorithm to the video file. We tried multiple tracking algorithms to track the position of the racecar. Details and background of the algorithms are included below:
+Since we can not export the 2D image coordinates from Blender in the real world we need to acquire them differently. For the cones this task can be done manually as since the cameras and cones do not move that needs to be done for only for the first frame. Also the previous group did some research in that area to automate this task and had no satisfying results as not only the cones need to be detected but also correctly mapped from all angles. To get the 2D position of the racecar we tried multiple tracking algorithms. Details and background of the algorithms are included below:
 
 
 
 - **OpenCV Tracking Algorithm** :
   - **KCF** [[5]](#5): 
-    - Kernelized Correlation Filter (KCF) is a novel tracking framework, and it is one of the recent findings which has shown promising results. KCF is based on the idea of the traditional correlational filter. It uses kernel trick and circulant matrices to improve the computation speed significantly.
+     Kernelized Correlation Filter (KCF) is a novel tracking framework, and it is one of the recent findings which has shown promising results. KCF is based on the idea of the traditional correlational filter. It uses kernel trick and circulant matrices to improve the computation speed significantly.
 
-- **CSRT** [[6]](#6): 
-    - Channel and Spatial Reliability Tracking is a constrained filter learning with an arbitrary spatial reliability map. It utilizes a spatial reliability map. CSRT adjusts the filter support to the part of the object suitable for tracking.
+  - **CSRT** [[6]](#6): 
+    Channel and Spatial Reliability Tracking is a constrained filter learning with an arbitrary spatial reliability map. It utilizes a spatial reliability map. CSRT adjusts the filter support to the part of the object suitable for tracking.
 
-- **GOTRUN** [[7]](#7):
-  - Generic Object Tracking Using Regression Networks (GOTRUN) is a Deep Learning based tracking algorithm. GOTRUN is significantly faster than previous methods that use neural networks for tracking. The tracker uses a simple feed-forward network without any online training, and it can track generic objects at 100 fps. Nevertheless, in our case, GOTRUN did not perform well.
+  - **GOTRUN** [[7]](#7):
+    Generic Object Tracking Using Regression Networks (GOTRUN) is a Deep Learning based tracking algorithm. GOTRUN is significantly faster than previous methods that use neural networks for tracking. The tracker uses a simple feed-forward network without any online training, and it can track generic objects at 100 fps. 
 
----
-#### Selecting the Tracker:
+After testing the tracking algorithms extensively we found out that `CSRT` performed best on our generated video files. Since even the results of `CSRT` were not very convincing and we could not get any real world data where further optimization would be required anyway we tried tracking a color object. Therefor we colored ether the whole car red or added a red-colored cylinder on top of the racecar to make the tracking even more accurate. Then we only had to apply a color filter of the image and retrieve the 2D coordinates of the center of the filtered portion. 
 
-```
- tracker_types = ['KCF', 'CSRT']
-    tracker_type = tracker_types[1]
-
-    if tracker_type == 'KCF':
-        tracker = cv2.TrackerKCF_create()
-    elif tracker_type == "CSRT":
-        tracker = cv2.TrackerCSRT_create()
-```
-
-Output of the bounding Box Area:
-
-```
-p1 = (int(bbox[0]), int(bbox[1]))
-p2 = (int(bbox[0] + bbox[2]), int(bbox[1] + bbox[3]))
-            print(p1,p2)
-```
-
-
-### Saving the points for each frame:
-We have to save the center point of the bounding box, So we divide the bounding box by 2. 
-```
-with open(os.path.join(current_frame_path, cam_name +  '.p2d'), 'a') as f:
-                print(f'{(p1[0] + p2[0]) / 2 } {(p1[1] + p2[1]) / 2 }', file=f)
-```
-
----
-
-### Color Tracking
-  - To try another approach for tracking, we can track an object based on color—for example, a red Car, a red-colored cylinder. Therefore, We colored the whole car red, and we added a red-colored cylinder on top of the racecar to make the tracking even more accurate. We then compared the results for both of the approaches. 
-```
-
-    # defining the range of red color
-    # lower boundary RED color range values; Hue (0 - 10)
-    lower1 = np.array([0, 50, 30])
-    upper1 = np.array([5, 255, 255])
-
-    # upper boundary RED color range values; Hue (160 - 180)
-    lower2 = np.array([180,50,30])
-    upper2 = np.array([180,255,255])
-
-```
-Tracking and saving the 2D points: 
-
-```
-        # draw rectangle
-        img = cv2.rectangle(frame, (min_x, min_y), (max_x, max_y), (0, 0, 255), 2)
-        cv2.putText(frame, "RED color", (x, y),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255))
-        # save result
-        with open(os.path.join(current_frame_path, cam_name + '.p2d'), 'a') as f:
-            # use bottom of reactangle as center
-            print(f'{result_x} {result_y}', file=f)
-        with open(os.path.join(path, 'tracking-result-'+  cam_name + '.p2d'), 'a') as f:
-            print(f'{result_x}; {result_y}', file=f)
-        cv2.rectangle(frame, [min_x, min_y], [max_x, max_y], (255, 0, 0), 2, 1)
-```
-
+<div style="page-break-after: always;"></div>
 
 ## Results
 
-We ran our 3D scene reconstruction algorithm with the tracking results of the `blender-position` script, the `CSRT-tracker`,the `color-tacker` tracking the whole car and tracking only a `red-cylinder` on top of the car. To better compare the results we than aligned the starting position of the racecar, the result is shown in the figure below.
+We ran our 3D scene reconstruction algorithm with the tracking results of the `blender-position` script, the `CSRT-tracker`,the `color-tacker` tracking the whole car and tracking only a `red-cylinder` on top of the car. To better compare the results we than aligned the starting positions of the racecar. The result is shown in the figure below.
 
-<p>
+<p align="center">
   <img src="./presentation/normalized.png"  width="600">
   <em>Fig: 2D plot of reconstruction</em>
 </p>
 
-As we can see the reconstruction using the `blender-position` is performing very well. Also the `reconstructed cones` are very close to the original cones. `CSRT-tracker` is way off from the `real position` of the racecar and is jumping around a lot. `color-tracker` and `red-cylinder` are able to follow the racecar and almost recover a position between the cones.
+As we can see the reconstruction using the `blender-position` is performing very well. Also the `reconstructed cones` are very close to the original cones. `CSRT-tracker` is way off from the `real position` of the racecar and is jumping around a lot. `color-tracker` and `red-cylinder` are able to follow the racecar and almost recover a position of the racecar between the cones all the way around the racetrack.
 
-As shown in the next figure the mean squared error confirms those findings. We did not include the high error of `CSRT-tracker` which is `160.54`.  
-<p>
+As shown in the next figure the mean squared error confirms those findings. We did not include the high error of `CSRT-tracker` which is `160.54` in the graphic.  
+<p align="center">
   <img src="./presentation/mse2.png"  width="600">
   <em>Fig: mean squared error</em>
 </p>
 
 We found a correlation between the optimization error returned by the `g2o` optimizer and substituted those points. Also we applied a convolution filter to smoothen the result as you can see in the figure below. This did not improve the mean squared error tough. For more details take a look at the jupiter notebook `notebook.ipynb` we used to analyse the reconstruction results.
 
-<p>
+<p align="center">
   <img src="./presentation/smoothend_plot.png"  width="600">
   <em>Fig: smoothened  2D plot</em>
 </p>
 
-## Evaluation
-
-We can see that with "perfect" 2D input points as we get them from blender accuracy around $~10cm$ is possible. Therefore our method is in theory suitable to improve the SLAM algorithm driving the car. We experienced that the 3D reconstruction result is highly dependent on valid 2D input points as slight noise results in a high error. That is why precise tracking is important. Also, as our input data is generated by Blender we do not suffer from noise and are using a optically  camera with out any distortion or optically imperfections. In the real world those effects will have a negative impact on the accuracy of the reconstruction.
-
+<div style="page-break-after: always;"></div>
 
 ## Real World Guide
 
-TODO:
-- [ ] explain steps needed to try it in the real world
-- [ ] written text not bullet points
-
 1. Set at least 3 cameras which all cover the whole track
 2. Get calibration matrix of camera (depends on set focal length)
-2. Measure the locations of at least 4 Objects which are not on one plane
+2. Measure the locations of at least 4 objects which are not on one plane
 3. Film racecar with static cameras (fast shutter speed -> no motion blur)
-4. Extract first frame from all cameras and annotate cone position (like previous groupe)
+4. Extract first frame from all cameras and annotate cone position (like previous group)
 5. Track car in videos to extract 2D position of car
 6. Perform 3D Scene Reconstruction run_reconstruction
 7. Transform result with affine transformation and the "correct" location of the 4 known objects
 
-## Conclusion :
+## Conclusion
 
-- **Future prospects** :
-  - Implementing the algorithm in a real-world scenario and evaluating our solution.
-  - To improve the tracking accuracy we can try better methods. i.e: Train a CNN model using images of the Racecar.
+We where able to reconstruct a racetrack and a car driving around the racetrack by applying a 3D scene reconstruction algorithm. We can see that with "perfect" 2D input points as we get them from blender accuracy around $~10cm$ is possible. Therefore our method is in theory suitable to improve the SLAM algorithm driving the car. We experienced that the 3D reconstruction result is highly dependent on valid 2D input points as slight noise results in a high error. That is why precise tracking is important. Also, as our input data is generated by Blender we do not suffer from noise and are using a optically camera with out any distortion or optically imperfections. In the real world those effects will have a negative impact on the accuracy of the reconstruction.
+
+<div style="page-break-after: always;"></div>
 
 ## README
 
@@ -350,6 +256,9 @@ To start blender with the current directory set use the [script](https://stackov
 * in `utlis.py` we implemented some functions of (pypangolin)[https://github.com/uoip/pangolin] to avoid using this outdated library
 
 ---
+
+<div style="page-break-after: always;"></div>
+
 ## References
 <a id="1">[1]</a>
 M. B. K. Iagnemma, “Special issue on the darpa grand challenge, part
@@ -369,3 +278,8 @@ M. B. K. Iagnemma, “Special issue on the darpa grand challenge, part
 https://arxiv.org/abs/1611.08461
 
 <a id="7">[7]</a> Learning to Track at 100 FPS with Deep Regression Networks  https://arxiv.org/abs/1604.01802
+
+ <a id="8">[8]</a>  Richard Szelisk, “Computer Vision: Algorithms and Applications”, March 27 2021 draft, pp. 681-687
+
+
+ <a id="9">[9]</a>  Richard Szelisk, “Computer Vision: Algorithms and Applications”, March 27 2021 draft, p. 41
