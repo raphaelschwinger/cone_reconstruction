@@ -2,7 +2,7 @@
 ## Sommersemester 2021
 ---
 
-By *Raphael Schwinger, Rakibuzzaman Mahmud*
+By *Rakibuzzaman Mahmud*, *Raphael Schwinger*
 
 Supervisors : *Lars Schmarje,
 Claudius Anton Zelenka*
@@ -110,11 +110,11 @@ At first glance the result looks like the real racetrack. If we take a closer lo
 
 <div style="page-break-after: always;"></div>
 
-## Reconstruction of the race-track using Blender :
+## Reconstruction of the race-track using blender
 
   As mentioned above, to apply our 3D scene reconstruction algorithm we need video files of the car racing around the track filmed from at least 3 angles. Then we need to acquire the car's and cones 2D position for each frame. However, because of Covid-19, it was not possible to make a real-world racing scenario and record  racing videos of the car. So we had to improvise and work on a simulated racing environment which we created on Blender. This gives us also the benefit of directly exporting the 2D coordinates for each frame of the video. Additionally we do not need to worry about any noise in the video files as the cameras in blender are not suffering from physical constraints.
 
-#### Blender environmental elements:
+#### Blender environmental elements
   - **Camera**: We set the height of the camera as 1.5 m and focal length to 15 mm. We used a python script for camera calibration which is included in README. The video we exported has a resolution of 4k.
   - **Car**: We used a realistic Rosyard car model with height of 0.90 m , width 1.15 and length 2.45 m.  
   
@@ -123,7 +123,7 @@ At first glance the result looks like the real racetrack. If we take a closer lo
   <em>Fig: Blender Car Model</em>
 </p>
 
-  - **Track**: To mark the track, We used yellow and blue cones with a height of 0.15 m. We made a circular racetrack with 48 cones.  We added asphalt texture on the ground to make the racetrack look like a real racetrack. Also to make the environment look more realistic, we used a "skydome" to make it look like a sky on the horizon. 
+  - **Track**: To mark the track, we used yellow and blue cones with a height of 0.15 m. We made a circular racetrack with 48 cones.  We added asphalt texture on the ground to make the racetrack look like a real racetrack. Also to make the environment look more realistic, we used a "skydome" to make it look like a sky on the horizon. 
 
 
 <p style="display: table; align: center">
@@ -149,7 +149,7 @@ Since we can not export the 2D image coordinates from Blender in the real world 
   - **GOTRUN** [[7]](#7):
     Generic Object Tracking Using Regression Networks (GOTRUN) is a Deep Learning based tracking algorithm. GOTRUN is significantly faster than previous methods that use neural networks for tracking. The tracker uses a simple feed-forward network without any online training, and it can track generic objects at 100 fps. 
 
-After testing the tracking algorithms extensively we found out that `CSRT` performed best on our generated video files. Since even the results of `CSRT` were not very convincing and we could not get any real world data where further optimization would be required anyway we tried tracking a color object. Therefor we colored ether the whole car red or added a red-colored cylinder on top of the racecar to make the tracking even more accurate. Then we only had to apply a color filter of the image and retrieve the 2D coordinates of the center of the filtered portion. 
+After testing the tracking algorithms extensively we found out that `CSRT` performed best on our generated video files. Since even the results of `CSRT` were not very convincing and we could not get any real world data where further optimization would be required anyway we tried tracking a color object. Therefore we colored ether the whole car red or added a red-colored cylinder on top of the racecar to make the tracking even more accurate. Then we only had to apply a color filter of the image and retrieve the 2D coordinates of the center of the filtered portion. 
 
 <div style="page-break-after: always;"></div>
 
@@ -198,7 +198,7 @@ We where able to reconstruct a racetrack and a car driving around the racetrack 
 
 ## README
 
-Our source code is heavily based on https://github.com/geohot/twitchslam
+Our source code is heavily based on https://github.com/geohot/twitchslam.
 
 ### Dev container setup
 
@@ -253,7 +253,7 @@ To start blender with the current directory set use the [script](https://stackov
 
 ### Miscs
 
-* in `utlis.py` we implemented some functions of (pypangolin)[https://github.com/uoip/pangolin] to avoid using this outdated library
+* in `utlis.py` we implemented some functions of [pypangoli](https://github.com/uoip/pangolin) to avoid using this outdated library
 
 ---
 
@@ -266,20 +266,20 @@ M. B. K. Iagnemma, “Special issue on the darpa grand challenge, part
 
 <a id="2">[2]</a> “Formula student rules 2017 v1.1,” 2017.
 
-<a id="3">[3]</a> https://www.mip.informatik.uni-kiel.de/en/theses-and-projects/rosyard
+<a id="3">[3]</a> https://www.mip.informatik.uni-kiel.de/en/theses-and-projects/rosyard.
 
 
 <a id="4">[4]</a> Valls, Miguel & Hendrikx, Hubertus & Reijgwart, Victor & Meier, Fabio & Sa, Inkyu & Dube, Renaud & Gawel, Abel & Bürki, Mathias & Siegwart, Roland. (2018). Design of an Autonomous Racecar: Perception, State Estimation and System Integration. 2048-2055. 10.1109/ICRA.2018.8462829. 
 
 
-<a id="5">[5]</a> High-Speed Tracking with Kernelized Correlation Filters https://arxiv.org/abs/1404.7584
+<a id="5">[5]</a> High-Speed Tracking with Kernelized Correlation Filters https://arxiv.org/abs/1404.7584.
 
 <a id="6">[6]</a> Discriminative Correlation Filter with Channel and Spatial Reliability 
-https://arxiv.org/abs/1611.08461
+https://arxiv.org/abs/1611.08461.
 
-<a id="7">[7]</a> Learning to Track at 100 FPS with Deep Regression Networks  https://arxiv.org/abs/1604.01802
+<a id="7">[7]</a> Learning to Track at 100 FPS with Deep Regression Networks  https://arxiv.org/abs/1604.01802.
 
- <a id="8">[8]</a>  Richard Szelisk, “Computer Vision: Algorithms and Applications”, March 27 2021 draft, pp. 681-687
+ <a id="8">[8]</a>  Richard Szelisk, “Computer Vision: Algorithms and Applications”, March 27 2021 draft, pp. 681-687.
 
 
- <a id="9">[9]</a>  Richard Szelisk, “Computer Vision: Algorithms and Applications”, March 27 2021 draft, p. 41
+ <a id="9">[9]</a>  Richard Szelisk, “Computer Vision: Algorithms and Applications”, March 27 2021 draft, p. 41.
