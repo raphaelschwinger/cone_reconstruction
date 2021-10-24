@@ -103,7 +103,7 @@ We decided to use  3D scene reconstruction using images/videos of the race track
 ---
 ### 3D Scene Reconstruction
 <p align="center">
-    <img src="presentation/ComputerVision-682.png"   width="300" alt>
+    <img src="docs/presentation/ComputerVision-682.png"   width="300" alt>
     <em>Fig: Camera matrix</em>
 </p>
 
@@ -134,7 +134,7 @@ This results in a list of 3D coordinates of the cones and the position of the ra
 
 
 <p align="center">
-    <img src="./presentation/reconstructed_racetrack.png"  width="300">
+    <img src="docs/presentation/reconstructed_racetrack.png"  width="300">
     <em>Fig: Blender Reconstruction</em>
 </p>
 
@@ -163,7 +163,7 @@ At first glance the result looks like the real racetrack. If we take a closer lo
   - **Car**: We used a realistic Rosyard car model with height of 0.90 m , width 1.15 and length 2.45 m.  
   
 <p align="center">
-  <img src="blender-car.jpeg"  width="300">
+  <img src="docs/blender-car.jpeg"  width="300">
   <em>Fig: Blender Car Model</em>
 </p>
 
@@ -171,8 +171,8 @@ At first glance the result looks like the real racetrack. If we take a closer lo
 
 
 <p style="display: table; align: center">
-  <img style="float: left" src="blender-racetrack-1.jpeg"  width="320">
-  <img style="float: left"src="blender-racetrack-2.jpeg"  width="320">
+  <img style="float: left" src="docs/blender-racetrack-1.jpeg"  width="320">
+  <img style="float: left"src="docs/blender-racetrack-2.jpeg"  width="320">
 
   <em>Fig: Circular Racetrack</em>
 </p>
@@ -202,7 +202,7 @@ After testing the tracking algorithms extensively we found out that `CSRT` perfo
 We ran our 3D scene reconstruction algorithm with the tracking results of the `blender-position` script, the `CSRT-tracker`,the `color-tacker` tracking the whole car and tracking only a `red-cylinder` on top of the car. To better compare the results we than aligned the starting positions of the racecar. The result is shown in the figure below.
 
 <p align="center">
-  <img src="./presentation/normalized.png"  width="600">
+  <img src="docs/presentation/normalized.png"  width="600">
   <em>Fig: 2D plot of reconstruction</em>
 </p>
 
@@ -217,7 +217,7 @@ As shown in the next figure the mean squared error confirms those findings. We d
 We found a correlation between the optimization error returned by the `g2o` optimizer and substituted those points. Also we applied a convolution filter to smoothen the result as you can see in the figure below. This did not improve the mean squared error tough. For more details take a look at the jupiter notebook `notebook.ipynb` we used to analyse the reconstruction results.
 
 <p align="center">
-  <img src="./presentation/smoothend_plot.png"  width="600">
+  <img src="docs/presentation/smoothend_plot.png"  width="600">
   <em>Fig: smoothened  2D plot</em>
 </p>
 
